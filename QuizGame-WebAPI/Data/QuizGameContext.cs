@@ -10,27 +10,12 @@ public class QuizGameContext(DbContextOptions<QuizGameContext> options) : Identi
     public DbSet<Game> Games {get; set;}
     public DbSet<Question> Questions {get; set;}
     public DbSet<Quiz> Quizzes {get; set;}
-    public DbSet<Answer> Answers {get; set;}
-    // public DbSet<Answer> IncorrectAnswers {get; set;}
+    public DbSet<CorrectAnswer> Answers {get; set;}
+    public DbSet<IncorrectAnswer> IncorrectAnswers {get; set;}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
-        // modelBuilder.Entity<QuizGameUser>( p => 
-        // {
-        //     p.HasKey( p => p.Id);
-                
-        //     p.HasMany( p => p.Quizzes)
-        //         .WithOne( p => p.Owner)
-        //         .IsRequired(false);
-            
-        //     p.HasMany( p => p.OwnedGames)
-        //         .WithOne( p => p.Owner)
-        //         .IsRequired(false);
-            
-        //     p.HasMany( p => p.AssignedGames)
-        //         .WithMany( p => p.AssignedUsers);
-        // });
 
         modelBuilder.Entity<Quiz>( p => 
         {
@@ -60,9 +45,8 @@ public class QuizGameContext(DbContextOptions<QuizGameContext> options) : Identi
         {
             p.HasOne( p => p.CorrectAnswer)
                 .WithOne()
-                .IsRequired(true)
-                .HasForeignKey<Question>( p => p.Id)
-                .OnDelete(DeleteBehavior.NoAction);
+                .HasForeignKey<CorrectAnswer>( "QuestionId")
+                .IsRequired(true);
             
             p.HasMany( p => p.IncorrectAnswers)
                 .WithMany();

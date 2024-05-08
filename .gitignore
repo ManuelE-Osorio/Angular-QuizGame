@@ -8,6 +8,7 @@
 
 # User-specific files
 mono/
+*.sql
 *.rsuser
 *.suo
 *.user

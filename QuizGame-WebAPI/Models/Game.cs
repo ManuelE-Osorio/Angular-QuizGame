@@ -1,22 +1,39 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace QuizGame.Models;
 
 public class Game
 {
     public int Id {get; set;}
+
+    [Required, StringLength(100, MinimumLength = 3)]
     public string Name {get; set;}
-    public int PassingScore {get; set;}
-    public DateTime DueDate {get; set;}
-    public Quiz Quiz {get; set;}
-    public IEnumerable<QuizGameUser>? AssignedUsers {get; set;}
-    public QuizGameUser? Owner {get; set;}
+
+    [Required, Range(0, 100)]
+    public int PassingScore {get; set;} = 0;
+
+    [DateRange]
+    [DataType(DataType.DateTime)]
+    public DateTime? DueDate {get; set;}
     
+    public Quiz Quiz {get; set;}
+    public ICollection<QuizGameUser>? AssignedUsers {get; set;}
+    public QuizGameUser? Owner {get; set;}
+
     internal Game()
     {
-        
+        Name = default!;
+        Quiz = default!;
     }
     public Game(string name, Quiz quiz)
     {
         Name = name;
         Quiz = quiz;
     }
+}
+
+public class DateRangeAttribute : RangeAttribute
+{
+    public DateRangeAttribute()
+    : base(typeof(DateTime), DateTime.Now.ToShortDateString(),     DateTime.MaxValue.ToShortDateString()) { } 
 }

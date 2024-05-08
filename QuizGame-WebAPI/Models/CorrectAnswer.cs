@@ -1,6 +1,9 @@
 namespace QuizGame.Models;
 
-public class CorrectAnswer : Answer
+public class CorrectAnswer : Answer 
 {
-    public Question Question {get; set;}
+    public CorrectAnswer(string answerText)
+    {
+        AnswerText = answerText;
+    }
 }
