@@ -11,4 +11,5 @@ public class QuizGameUser : IdentityUser
     public ICollection<Quiz>? Quizzes {get; set;}
     public ICollection<Game>? AssignedGames {get; set;}
     public ICollection<Game>? OwnedGames {get; set;}
+    public ICollection<Question>? OwnedQuestions {get; set;}
 }

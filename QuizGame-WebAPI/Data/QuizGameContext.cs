@@ -50,6 +50,10 @@ public class QuizGameContext(DbContextOptions<QuizGameContext> options) : Identi
             
             p.HasMany( p => p.IncorrectAnswers)
                 .WithMany();
+
+            p.HasOne( p => p.Owner)
+                .WithMany( p => p.OwnedQuestions)
+                .IsRequired(false);
         });
     }
 }

@@ -17,6 +17,7 @@ public class Question
   
     public CorrectAnswer CorrectAnswer {get; set;}
     public ICollection<IncorrectAnswer> IncorrectAnswers {get; set;}
+    public QuizGameUser? Owner {get; set;}
 
     internal Question()
     {

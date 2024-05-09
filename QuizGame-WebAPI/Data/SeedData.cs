@@ -102,6 +102,7 @@ public class SeedData
     public static async Task<bool> Seed(IServiceProvider services)
     {
         using var context = services.GetRequiredService<QuizGameContext>();
+        // context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
         if(context.Questions.Any() || context.Quizzes.Any() || context.Users.Any() || context.Games.Any())
             return false;
@@ -136,6 +137,16 @@ public class SeedData
         await userManager.AddToRoleAsync(user2, "User");
 
         context.SaveChanges();        
+
+        foreach(var question in MathQuestions)
+        {
+            question.Owner = admin;
+        }
+
+        foreach(var question in CapitalQuestions)
+        {
+            question.Owner = admin;
+        }
 
         context.Questions.AddRange([..MathQuestions, ..AdvancedMathQuestions, ..CapitalQuestions]);
         context.Quizzes.AddRange( [MathQuiz, CapitalQuiz, AdvancedMathQuiz]);
