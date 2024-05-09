@@ -13,7 +13,7 @@ public class Quiz
     public ICollection<Game>? Games {get; set;}
     public QuizGameUser? Owner {get; set;}
 
-    internal Quiz()
+    private Quiz()
     {
         Name = default!;
         Questions = default!;

@@ -3,49 +3,62 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuizGame.Data;
 using QuizGame.Models;
+using QuizGame.Repositories;
+using QuizGame.Services;
 
 namespace QuizGame.Controllers;
 
 [ApiController]
 [ApiConventionType(typeof(DefaultApiConventions))]
 [Route("api/questions")]
-public class QuestionsController(QuizGameContext context, UserManager<QuizGameUser> userManager) : ControllerBase
+public class QuestionsController(QuestionsService questionsService, UserManager<QuizGameUser> userManager) : ControllerBase
 {
-    private readonly QuizGameContext _context = context;
+    private readonly QuestionsService _questionsService = questionsService;
     private readonly UserManager<QuizGameUser> _userManager = userManager;
 
-    public async Task<IResult> GetAllQuestions(string? category) 
+    [HttpGet]
+    public async Task<IResult> GetAllQuestions(string? category, string? date, int? startIndex, int? pageSize) 
     {
-        var user = _userManager.GetUserId(User);
-        var questions = _context.Questions
-            .Where( p => p.Owner == null || p.Owner.Id == user);
+        var user = await _userManager.GetUserAsync(User);
+        var questions = _questionsService.GetAll(user!, category, date, startIndex, pageSize);
 
-        if(category is not null)
-            questions = questions.Where( p => p.Category == category);
-
-        return TypedResults.Ok(await questions.ToListAsync());  //dto?
+        return TypedResults.Ok(questions);  //dto?
     }
 
+    [HttpPost]
     public async Task<IResult> InsertQuestion(Question question, bool owned = true)
     {
         if(!ModelState.IsValid)
             return TypedResults.BadRequest();
 
-        
         var user = await _userManager.GetUserAsync(User);
-        if(owned == true)
-            question.Owner = user;
+        if(await _questionsService.AddQuestion(user!, owned, question))
+            return TypedResults.Created($"/{question.Id}", question);
+        
+        return TypedResults.BadRequest();
+    }
 
-        _context.Questions.Add(question);
+    [HttpPut("{id}")]
+    public async Task<IResult> UpdateQuestion(Question question)
+    {
+        if(!ModelState.IsValid)
+            return TypedResults.BadRequest();
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch
-        {
-            //errorhandler
-        }
-        return TypedResults.Created($"/{question.Id}", question);
+        var user = await _userManager.GetUserAsync(User);
+        if( await _questionsService.UpdateQuestion(question, user!))
+            return TypedResults.Ok();
+
+        return TypedResults.BadRequest();
+    }
+
+
+    [HttpDelete("{id}")]
+    public async Task<IResult> DeleteQuestion(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        if(await _questionsService.DeleteQuestion(id, user!))
+            return TypedResults.Ok();
+        
+        return TypedResults.BadRequest();
     }
 }

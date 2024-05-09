@@ -52,36 +52,6 @@ namespace QuizGame_WebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "IncorrectAnswers",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    AnswerText = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    AnswerImage = table.Column<string>(type: "nvarchar(max)", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_IncorrectAnswers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Questions",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    QuestionText = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
-                    QuestionImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecondsTimeout = table.Column<int>(type: "int", nullable: false),
-                    RelativeScore = table.Column<double>(type: "float", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Questions", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -188,6 +158,29 @@ namespace QuizGame_WebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Questions",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuestionText = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    QuestionImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    SecondsTimeout = table.Column<int>(type: "int", nullable: false),
+                    RelativeScore = table.Column<double>(type: "float", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    OwnerId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Questions", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Questions_AspNetUsers_OwnerId",
+                        column: x => x.OwnerId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Quizzes",
                 columns: table => new
                 {
@@ -229,23 +222,20 @@ namespace QuizGame_WebAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "IncorrectAnswerQuestion",
+                name: "IncorrectAnswers",
                 columns: table => new
                 {
-                    IncorrectAnswersId = table.Column<int>(type: "int", nullable: false),
-                    QuestionId = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    QuestionId = table.Column<int>(type: "int", nullable: false),
+                    AnswerText = table.Column<string>(type: "nvarchar(500)", maxLength: 500, nullable: false),
+                    AnswerImage = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_IncorrectAnswerQuestion", x => new { x.IncorrectAnswersId, x.QuestionId });
+                    table.PrimaryKey("PK_IncorrectAnswers", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_IncorrectAnswerQuestion_IncorrectAnswers_IncorrectAnswersId",
-                        column: x => x.IncorrectAnswersId,
-                        principalTable: "IncorrectAnswers",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_IncorrectAnswerQuestion_Questions_QuestionId",
+                        name: "FK_IncorrectAnswers_Questions_QuestionId",
                         column: x => x.QuestionId,
                         principalTable: "Questions",
                         principalColumn: "Id",
@@ -283,12 +273,12 @@ namespace QuizGame_WebAPI.Migrations
                 name: "QuestionQuiz",
                 columns: table => new
                 {
-                    QuestionsId = table.Column<int>(type: "int", nullable: false),
-                    QuizId = table.Column<int>(type: "int", nullable: false)
+                    AssignedQuizzesId = table.Column<int>(type: "int", nullable: false),
+                    QuestionsId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_QuestionQuiz", x => new { x.QuestionsId, x.QuizId });
+                    table.PrimaryKey("PK_QuestionQuiz", x => new { x.AssignedQuizzesId, x.QuestionsId });
                     table.ForeignKey(
                         name: "FK_QuestionQuiz_Questions_QuestionsId",
                         column: x => x.QuestionsId,
@@ -296,8 +286,8 @@ namespace QuizGame_WebAPI.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_QuestionQuiz_Quizzes_QuizId",
-                        column: x => x.QuizId,
+                        name: "FK_QuestionQuiz_Quizzes_AssignedQuizzesId",
+                        column: x => x.AssignedQuizzesId,
                         principalTable: "Quizzes",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -388,14 +378,19 @@ namespace QuizGame_WebAPI.Migrations
                 column: "QuizId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_IncorrectAnswerQuestion_QuestionId",
-                table: "IncorrectAnswerQuestion",
+                name: "IX_IncorrectAnswers_QuestionId",
+                table: "IncorrectAnswers",
                 column: "QuestionId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_QuestionQuiz_QuizId",
+                name: "IX_QuestionQuiz_QuestionsId",
                 table: "QuestionQuiz",
-                column: "QuizId");
+                column: "QuestionsId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Questions_OwnerId",
+                table: "Questions",
+                column: "OwnerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Quizzes_OwnerId",
@@ -428,7 +423,7 @@ namespace QuizGame_WebAPI.Migrations
                 name: "GameQuizGameUser");
 
             migrationBuilder.DropTable(
-                name: "IncorrectAnswerQuestion");
+                name: "IncorrectAnswers");
 
             migrationBuilder.DropTable(
                 name: "QuestionQuiz");
@@ -438,9 +433,6 @@ namespace QuizGame_WebAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Games");
-
-            migrationBuilder.DropTable(
-                name: "IncorrectAnswers");
 
             migrationBuilder.DropTable(
                 name: "Questions");

@@ -37,21 +37,6 @@ namespace QuizGame_WebAPI.Migrations
                     b.ToTable("GameQuizGameUser");
                 });
 
-            modelBuilder.Entity("IncorrectAnswerQuestion", b =>
-                {
-                    b.Property<int>("IncorrectAnswersId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
-
-                    b.HasKey("IncorrectAnswersId", "QuestionId");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("IncorrectAnswerQuestion");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -187,15 +172,15 @@ namespace QuizGame_WebAPI.Migrations
 
             modelBuilder.Entity("QuestionQuiz", b =>
                 {
+                    b.Property<int>("AssignedQuizzesId")
+                        .HasColumnType("int");
+
                     b.Property<int>("QuestionsId")
                         .HasColumnType("int");
 
-                    b.Property<int>("QuizId")
-                        .HasColumnType("int");
+                    b.HasKey("AssignedQuizzesId", "QuestionsId");
 
-                    b.HasKey("QuestionsId", "QuizId");
-
-                    b.HasIndex("QuizId");
+                    b.HasIndex("QuestionsId");
 
                     b.ToTable("QuestionQuiz");
                 });
@@ -277,7 +262,12 @@ namespace QuizGame_WebAPI.Migrations
                         .HasMaxLength(500)
                         .HasColumnType("nvarchar(500)");
 
+                    b.Property<int>("QuestionId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("QuestionId");
 
                     b.ToTable("IncorrectAnswers");
                 });
@@ -430,21 +420,6 @@ namespace QuizGame_WebAPI.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("IncorrectAnswerQuestion", b =>
-                {
-                    b.HasOne("QuizGame.Models.IncorrectAnswer", null)
-                        .WithMany()
-                        .HasForeignKey("IncorrectAnswersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("QuizGame.Models.Question", null)
-                        .WithMany()
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -498,15 +473,15 @@ namespace QuizGame_WebAPI.Migrations
 
             modelBuilder.Entity("QuestionQuiz", b =>
                 {
-                    b.HasOne("QuizGame.Models.Question", null)
+                    b.HasOne("QuizGame.Models.Quiz", null)
                         .WithMany()
-                        .HasForeignKey("QuestionsId")
+                        .HasForeignKey("AssignedQuizzesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("QuizGame.Models.Quiz", null)
+                    b.HasOne("QuizGame.Models.Question", null)
                         .WithMany()
-                        .HasForeignKey("QuizId")
+                        .HasForeignKey("QuestionsId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -535,6 +510,15 @@ namespace QuizGame_WebAPI.Migrations
                     b.Navigation("Quiz");
                 });
 
+            modelBuilder.Entity("QuizGame.Models.IncorrectAnswer", b =>
+                {
+                    b.HasOne("QuizGame.Models.Question", null)
+                        .WithMany("IncorrectAnswers")
+                        .HasForeignKey("QuestionId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("QuizGame.Models.Question", b =>
                 {
                     b.HasOne("QuizGame.Models.QuizGameUser", "Owner")
@@ -557,6 +541,8 @@ namespace QuizGame_WebAPI.Migrations
                 {
                     b.Navigation("CorrectAnswer")
                         .IsRequired();
+
+                    b.Navigation("IncorrectAnswers");
                 });
 
             modelBuilder.Entity("QuizGame.Models.Quiz", b =>

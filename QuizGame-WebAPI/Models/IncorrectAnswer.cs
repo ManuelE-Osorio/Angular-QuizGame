@@ -2,8 +2,5 @@ namespace QuizGame.Models;
 
 public class IncorrectAnswer : Answer 
 {
-    public IncorrectAnswer(string answerText)
-    {
-        AnswerText = answerText;
-    }
+    public IncorrectAnswer(string answerText) : base(answerText) {}
 }

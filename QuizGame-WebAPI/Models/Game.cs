@@ -20,7 +20,7 @@ public class Game
     public ICollection<QuizGameUser>? AssignedUsers {get; set;}
     public QuizGameUser? Owner {get; set;}
 
-    internal Game()
+    private Game()
     {
         Name = default!;
         Quiz = default!;

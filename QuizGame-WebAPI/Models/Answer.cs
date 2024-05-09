@@ -9,7 +9,7 @@ public class Answer
     [Required, StringLength(500, MinimumLength = 3)]
     public string AnswerText {get; set;}
     public string? AnswerImage {get; set;}
-    internal Answer() 
+    private Answer() 
     {
         AnswerText = default!;
     }
