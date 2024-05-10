@@ -20,9 +20,23 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
     public async Task<IResult> GetAllQuestions(string? category, string? date, int? startIndex, int? pageSize) 
     {
         var user = await _userManager.GetUserAsync(User);
-        var questions = _questionsService.GetAll(user!, category, date, startIndex, pageSize);
+        var questions = await _questionsService.GetAll(user!, category, date, startIndex, pageSize);
+        return TypedResults.Ok(questions);
+    }
 
-        return TypedResults.Ok(questions);  //dto?
+    // [HttpGet]
+    // [Route("/quiz/{id}")]
+    // public async Task<IResult> GetQuestionsByQuiz(int id, int? startIndex, int? pageSize)
+    // {
+
+    // }
+
+    [HttpPost]
+    [Route("/{id}/quiz")]
+    public async Task<IResult> AssignToQuiz(int id)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        return TypedResults.Ok();
     }
 
     [HttpPost]
@@ -39,18 +53,17 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
     }
 
     [HttpPut("{id}")]
-    public async Task<IResult> UpdateQuestion(Question question)
+    public async Task<IResult> UpdateQuestion(int id, Question question)
     {
         if(!ModelState.IsValid)
             return TypedResults.BadRequest();
 
         var user = await _userManager.GetUserAsync(User);
-        if( await _questionsService.UpdateQuestion(question, user!))
+        if( await _questionsService.UpdateQuestion(id, question, user!))
             return TypedResults.Ok();
 
         return TypedResults.BadRequest();
     }
-
 
     [HttpDelete("{id}")]
     public async Task<IResult> DeleteQuestion(int id)

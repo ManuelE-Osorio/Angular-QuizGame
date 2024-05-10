@@ -13,43 +13,28 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
 {
     private readonly IQuizGameRepository<Question> _questionsRepository = questionsRepository;
 
-    public IEnumerable<Question> GetAll(QuizGameUser user, string? category, string? date, int? startIndex, int? pageSize)
+    public async Task<PageData<QuestionDto>> GetAll(QuizGameUser user, string? category, string? date, int? startIndex, int? pageSize)
     {
-        var isValidDate = DateTime.TryParse( date, out DateTime dateResult)
+        var isValidDate = DateTime.TryParse( date, out DateTime dateResult);
 
-        IEnumerable<Question>? questions;
         Expression<Func<Question,bool>> expression = p => 
-            p.Owner == null || p.Owner == user &&
+            (p.Owner == null || p.Owner == user) &&
             (category == null || p.Category == category) &&
-            ( !isValidDate || p.CreatedAt == dateResult);
+            (!isValidDate || p.CreatedAt == dateResult);
 
+        var questions = _questionsRepository
+            .ReadAll(expression, startIndex, pageSize)
+            .OrderBy( p => p.CreatedAt);
+        
+        var totalQuestions = await _questionsRepository.Count(expression);
 
-
-        if(category != null)
-        {
-            expression p.Category == category;
-            questions = _questionsRepository
-                .ReadAll
-                (p => 
-                    p.Owner == null || 
-                    p.Owner == user && 
-                    p.Category == category, 
-                    startIndex, 
-                    pageSize 
-                );
-        }
-        else
-        {
-            questions = _questionsRepository
-                .ReadAll
-                ( p => 
-                    p.Owner == null || 
-                    p.Owner == user,
-                    startIndex,
-                    pageSize
-                );
-        }
-        return questions.OrderBy( p => p.CreatedAt);
+        return new PageData<QuestionDto>
+        (
+            questions.Select(p => new QuestionDto(p)),
+            totalQuestions,
+            startIndex,
+            pageSize
+        );
     }
 
     public async Task<bool> AddQuestion(QuizGameUser user, bool owned, Question question)
@@ -65,10 +50,10 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
         return false;
     }
 
-    public async Task<bool> UpdateQuestion(Question questionToUpdate, QuizGameUser user)
+    public async Task<bool> UpdateQuestion(int id, Question questionToUpdate, QuizGameUser user)
     {
-        var question = await _questionsRepository.ReadById(questionToUpdate.Id);
-        if( question is null)
+        var question = await _questionsRepository.ReadById(id);
+        if( question is null || id != questionToUpdate.Id)
             return false;
         
         if( question.Owner != null || question.Owner != user)

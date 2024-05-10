@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using QuizGame.Data;
 using QuizGame.Models;
+using QuizGame.Repositories;
+using QuizGame.Services;
 
 namespace QuizGame;
 
@@ -12,11 +14,13 @@ public class QuizGame
         var builder = WebApplication.CreateBuilder();
 
         builder.Services.AddAuthorization();
+        // builder.Services.AddAuthentication();
         builder.Services.AddControllers();
         builder.Services.AddSwaggerGen();
         builder.Services.AddIdentityApiEndpoints<QuizGameUser>()
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<QuizGameContext>();
+        builder.Services.AddEndpointsApiExplorer();
 
         builder.Services.AddDbContext<QuizGameContext>(options => 
         {
@@ -29,6 +33,9 @@ public class QuizGame
         {
             p.Password.RequireNonAlphanumeric = false;
         });
+
+        builder.Services.AddScoped<IQuizGameRepository<Question>, QuestionsRepository>();
+        builder.Services.AddScoped<QuestionsService>();
 
         builder.Services.AddCors(options =>
         {
@@ -54,14 +61,13 @@ public class QuizGame
         }
 
         app.UseHttpsRedirection();
-        app.Run();
-
+        // app.UseAuthentication();
+        // app.UseAuthorization();
         app.UseStaticFiles();
         app.MapControllers();
         app.MapIdentityApi<QuizGameUser>();
         app.MapSwagger();
         app.UseCors("AllowAnyOrigin");
-
         app.MapFallbackToFile("index.html");
         app.Run();
     }

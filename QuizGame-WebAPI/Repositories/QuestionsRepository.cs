@@ -39,7 +39,12 @@ public class QuestionsRepository(QuizGameContext context): IQuizGameRepository<Q
 
     public IEnumerable<Question> ReadAll(int? startIndex, int? pageSize)
     {
-        return _context.Questions.AsEnumerable().Skip(startIndex ?? 0).Take(pageSize ?? 5);
+        return _context.Questions
+            .Include( p => p.CorrectAnswer)
+            .Include( p => p.IncorrectAnswers)
+            .AsEnumerable()
+            .Skip(startIndex ?? 0)
+            .Take(pageSize ?? 5);
     }
 
     public async Task<Question?> ReadById(int id)
@@ -49,7 +54,12 @@ public class QuestionsRepository(QuizGameContext context): IQuizGameRepository<Q
 
     public IEnumerable<Question> ReadAll(Expression<Func<Question,bool>> expression, int? startIndex, int? pageSize)
     {
-        return _context.Questions.Where(expression).AsEnumerable().Skip(startIndex ?? 0).Take(pageSize ?? 5);
+        return _context.Questions.Where(expression)
+            .Include( p => p.CorrectAnswer)
+            .Include( p => p.IncorrectAnswers)
+            .AsEnumerable()
+            .Skip(startIndex ?? 0)
+            .Take(pageSize ?? 5);
     }
 
     public async Task<int> Count(Expression<Func<Question, bool>>? expression)

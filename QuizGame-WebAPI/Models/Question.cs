@@ -15,7 +15,6 @@ public class Question
     [Required, StringLength(500, MinimumLength = 3)]
     public string? Category {get; set;}
     public DateTime? CreatedAt {get; set;}
-  
     public CorrectAnswer CorrectAnswer {get; set;}
     public ICollection<IncorrectAnswer> IncorrectAnswers {get; set;}
     public QuizGameUser? Owner {get; set;}
