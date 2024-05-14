@@ -18,20 +18,6 @@ public class QuestionsRepository(QuizGameContext context): IQuizGameRepository<Q
         }
         catch
         {
-            return false;  //log error?
-        }
-        return true;
-    }
-
-    public async Task<bool> Delete(Question model)
-    {
-        try
-        {
-            _context.Questions.Remove(model);
-            await _context.SaveChangesAsync();
-        }
-        catch
-        {
             return false;
         }
         return true;
@@ -62,17 +48,32 @@ public class QuestionsRepository(QuizGameContext context): IQuizGameRepository<Q
             .Take(pageSize ?? 5);
     }
 
-    public async Task<int> Count(Expression<Func<Question, bool>>? expression)
+    public async Task<int> Count(Expression<Func<Question, bool>>? expression = null)
     {
         if(expression != null)
             return await _context.Questions.Where(expression).CountAsync();
         return await _context.Questions.CountAsync();
     }
+
     public async Task<bool> Update(Question model)
     {
         try
         {
             _context.Questions.Update(model);
+            await _context.SaveChangesAsync();
+        }
+        catch
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public async Task<bool> Delete(Question model)
+    {
+        try
+        {
+            _context.Questions.Remove(model);
             await _context.SaveChangesAsync();
         }
         catch

@@ -12,6 +12,7 @@ public class QuizGameContext(DbContextOptions<QuizGameContext> options) : Identi
     public DbSet<Quiz> Quizzes {get; set;}
     public DbSet<CorrectAnswer> Answers {get; set;}
     public DbSet<IncorrectAnswer> IncorrectAnswers {get; set;}
+    public DbSet<GameScore> Scores {get; set;}
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -55,6 +56,17 @@ public class QuizGameContext(DbContextOptions<QuizGameContext> options) : Identi
             p.HasOne( p => p.Owner)
                 .WithMany( p => p.OwnedQuestions)
                 .IsRequired(false);
+        });
+
+        modelBuilder.Entity<GameScore>( p => 
+        {
+            p.HasOne( p => p.User)
+                .WithMany( p => p.GameResults)
+                .IsRequired(true);
+
+            p.HasOne( p => p.Game)
+                .WithMany()
+                .IsRequired(true);
         });
     }
 }

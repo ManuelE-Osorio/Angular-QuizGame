@@ -1,3 +1,4 @@
+using System.Net.Quic;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -24,21 +25,6 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
         return TypedResults.Ok(questions);
     }
 
-    // [HttpGet]
-    // [Route("/quiz/{id}")]
-    // public async Task<IResult> GetQuestionsByQuiz(int id, int? startIndex, int? pageSize)
-    // {
-
-    // }
-
-    // [HttpPost]
-    // [Route("/{id}/quiz")]
-    // public async Task<IResult> AssignToQuiz(int id)
-    // {
-    //     var user = await _userManager.GetUserAsync(User);
-    //     return TypedResults.Ok();
-    // }
-
     [HttpPost]
     public async Task<IResult> InsertQuestion([FromBody] Question question, bool owned = true)
     {
@@ -49,29 +35,51 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
         if(await _questionsService.AddQuestion(user!, owned, question))
             return TypedResults.Created($"/{question.Id}", question);
         
-        return TypedResults.BadRequest();
+        return TypedResults.StatusCode(500);
     }
 
     [HttpPut("{id}")]
     public async Task<IResult> UpdateQuestion(int id, [FromBody] Question question)
     {
-        if(!ModelState.IsValid)
-            return TypedResults.BadRequest();
+        if(!ModelState.IsValid || id != question.Id)
+            return TypedResults.BadRequest(ModelState);
 
         var user = await _userManager.GetUserAsync(User);
-        if( await _questionsService.UpdateQuestion(id, question, user!))
+        
+        bool operationSuccesfull;
+        try
+        {
+            operationSuccesfull = await _questionsService.UpdateQuestion(question, user!);
+        }
+        catch(Exception ex)
+        {
+            return TypedResults.BadRequest(ex.Message);
+        }
+
+        if(operationSuccesfull)
             return TypedResults.Ok();
 
-        return TypedResults.BadRequest();
+        return TypedResults.StatusCode(500);
     }
 
     [HttpDelete("{id}")]
     public async Task<IResult> DeleteQuestion(int id)
     {
         var user = await _userManager.GetUserAsync(User);
-        if(await _questionsService.DeleteQuestion(id, user!))
+
+        bool operationSuccesfull;
+        try
+        {
+            operationSuccesfull = await _questionsService.DeleteQuestion(id, user!);
+        }
+        catch(Exception ex)
+        {
+            return TypedResults.BadRequest(ex.Message);
+        }
+
+        if(operationSuccesfull)
             return TypedResults.Ok();
         
-        return TypedResults.BadRequest();
+        return TypedResults.StatusCode(500);
     }
 }

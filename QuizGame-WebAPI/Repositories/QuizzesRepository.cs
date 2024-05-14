@@ -23,20 +23,6 @@ public class QuizzesRepository(QuizGameContext context): IQuizGameRepository<Qui
         return true;
     }
 
-    public async Task<bool> Delete(Quiz model)
-    {
-        try
-        {
-            _context.Quizzes.Remove(model);
-            await _context.SaveChangesAsync();
-        }
-        catch
-        {
-            return false;
-        }
-        return true;
-    }
-
     public IEnumerable<Quiz> ReadAll(int? startIndex, int? pageSize)
     {
         return _context.Quizzes
@@ -64,11 +50,26 @@ public class QuizzesRepository(QuizGameContext context): IQuizGameRepository<Qui
             return await _context.Quizzes.Where(expression).CountAsync();
         return await _context.Questions.CountAsync();
     }
+
     public async Task<bool> Update(Quiz model)
     {
         try
         {
             _context.Quizzes.Update(model);
+            await _context.SaveChangesAsync();
+        }
+        catch
+        {
+            return false;
+        }
+        return true;
+    }
+
+    public async Task<bool> Delete(Quiz model)
+    {
+        try
+        {
+            _context.Quizzes.Remove(model);
             await _context.SaveChangesAsync();
         }
         catch

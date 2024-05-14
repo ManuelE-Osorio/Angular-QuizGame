@@ -17,7 +17,7 @@ public class QuizController(QuizzesService quizService, UserManager<QuizGameUser
     private readonly UserManager<QuizGameUser> _userManager = userManager;
 
     [HttpGet]
-    public async Task<IResult> GetAllQuizzez(string? name, int? startIndex, int? pageSize) 
+    public async Task<IResult> GetAllQuizzes(string? name, int? startIndex, int? pageSize) 
     {
         var user = await _userManager.GetUserAsync(User);
         var quizzes = await _quizService.GetAll(user!, name, startIndex, pageSize);
@@ -29,9 +29,16 @@ public class QuizController(QuizzesService quizService, UserManager<QuizGameUser
     public async Task<IResult> GetQuizById(int id)
     {
         var user = await _userManager.GetUserAsync(User);
-        var quiz = await _quizService.GetById(user!,id);
-        if(quiz is null)
-            return TypedResults.BadRequest();
+        QuizDto quiz;
+        try
+        {   
+            quiz = await _quizService.GetById(user!,id);
+        }
+        catch(Exception ex)
+        {
+            return TypedResults.BadRequest(ex.Message);
+        }
+
         return TypedResults.Ok(quiz);
     }
 
@@ -42,32 +49,66 @@ public class QuizController(QuizzesService quizService, UserManager<QuizGameUser
             return TypedResults.BadRequest();
 
         var user = await _userManager.GetUserAsync(User);
-        if(await _quizService.AddQuiz(user!, owned, quiz))
+
+        bool operationSuccesfull;
+        try
+        {
+            operationSuccesfull = await _quizService.AddQuiz(user!, owned, quiz);
+        }
+        catch(Exception ex)
+        {
+            return TypedResults.BadRequest(ex.Message);
+        }
+
+        if(operationSuccesfull)
             return TypedResults.Created($"/{quiz.Id}", quiz);
         
-        return TypedResults.BadRequest();
+        return TypedResults.StatusCode(500);
     }
 
     [HttpPut]
     [Route("/{id}")]
-    public async Task<IResult> ModifyQuiz(int id, [FromBody] Quiz quizToUpdate)
+    public async Task<IResult> UpdateQuiz(int id, [FromBody] Quiz quizToUpdate)
     {
-        if(!ModelState.IsValid)
+        if(!ModelState.IsValid || quizToUpdate.Id != id)
             return TypedResults.BadRequest();
 
         var user = await _userManager.GetUserAsync(User);
-        if(!await _quizService.UpdateQuiz(id, quizToUpdate, user!))
-            return TypedResults.BadRequest();
-        return TypedResults.Ok();
+        
+        bool operationSuccesfull;
+        try
+        {
+            operationSuccesfull = await _quizService.UpdateQuiz(quizToUpdate, user!);
+        }
+        catch(Exception ex)
+        {
+            return TypedResults.BadRequest(ex.Message);
+        }
+
+        if(operationSuccesfull)
+            return TypedResults.Ok();
+            
+        return TypedResults.StatusCode(500);
     }
 
     [HttpDelete("{id}")]
     public async Task<IResult> DeleteQuiz(int id)
     {
         var user = await _userManager.GetUserAsync(User);
-        if(await _quizService.DeleteQuestion(id, user!))
+        
+        bool operationSuccesfull;
+        try
+        {
+            operationSuccesfull = await _quizService.DeleteQuiz(id, user!);
+        }
+        catch(Exception ex)
+        {
+            return TypedResults.BadRequest(ex.Message);
+        }
+
+        if(operationSuccesfull)
             return TypedResults.Ok();
         
-        return TypedResults.BadRequest();
+        return TypedResults.StatusCode(500);
     }
 }

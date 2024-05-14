@@ -12,4 +12,5 @@ public class QuizGameUser : IdentityUser
     public ICollection<Game>? AssignedGames {get; set;}
     public ICollection<Game>? OwnedGames {get; set;}
     public ICollection<Question>? OwnedQuestions {get; set;}
+    public ICollection<GameScore>? GameResults {get; set;}
 }

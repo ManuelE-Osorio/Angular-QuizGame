@@ -32,13 +32,11 @@ public class QuizzesService(IQuizGameRepository<Quiz> quizzesRepository)
         );
     }
 
-    public async Task<QuizDto?> GetById(QuizGameUser user, int id)
+    public async Task<QuizDto> GetById(QuizGameUser user, int id)
     {
-        var quiz = await _quizzesRepository.ReadById(id);
-        if(quiz is null)
-            return null;
-        else if (quiz.Owner is not null && quiz.Owner != user)
-            return null;
+        var quiz = await _quizzesRepository.ReadById(id) ?? throw new Exception("Quiz not found");
+        if (quiz.Owner != null && quiz.Owner != user)
+            throw new Exception("Quiz is not owned by the user making the request");
 
         return new QuizDto(quiz);
     }
@@ -56,17 +54,14 @@ public class QuizzesService(IQuizGameRepository<Quiz> quizzesRepository)
         return false;
     }
 
-    public async Task<bool> UpdateQuiz(int id, Quiz quizToUpdate, QuizGameUser user)
+    public async Task<bool> UpdateQuiz(Quiz quizToUpdate, QuizGameUser user)
     {
-        var quiz = await _quizzesRepository.ReadById(id);
-        if( quiz is null || id != quizToUpdate.Id)
-            return false;
-        
-        if( quiz.Owner != null && quiz.Owner != user)
-            return false;
+        var quiz = await _quizzesRepository.ReadById(quizToUpdate.Id) ?? throw new Exception("Quiz not found");
+        if ( quiz.Owner != null && quiz.Owner != user)
+            throw new Exception("Quiz is not owned by the user making the request");
 
         if( quiz.Games != null && quiz.Games.Count > 0)
-            return false;
+            throw new Exception("Cannot delete quiz with assigned games.");
 
         //change from dto to question?
 
@@ -76,17 +71,14 @@ public class QuizzesService(IQuizGameRepository<Quiz> quizzesRepository)
         return false;
     }
 
-    public async Task<bool> DeleteQuestion(int id, QuizGameUser user)
+    public async Task<bool> DeleteQuiz(int id, QuizGameUser user)
     {
-        var quiz = await _quizzesRepository.ReadById(id);
-        if( quiz is null)
-            return false;
-
-        if( quiz.Owner != null && quiz.Owner != user)
-            return false;
+        var quiz = await _quizzesRepository.ReadById(id) ?? throw new Exception("Quiz not found");
+        if ( quiz.Owner != null && quiz.Owner != user)
+            throw new Exception("Quiz is not owned by the user making the request");
 
         if( quiz.Games != null && quiz.Games.Count > 0)
-            return false;
+            throw new Exception("Cannot delete quiz with assigned games.");
 
         if(await _quizzesRepository.Delete(quiz))
             return true;

@@ -43,24 +43,24 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
             question.Owner = user;
 
         //change from dto to question?
-        
-        if(await _questionsRepository.Create(question))
+        var operationSuccesfull = await _questionsRepository.Create(question);
+
+        if(operationSuccesfull)
             return true;
         
         return false;
     }
 
-    public async Task<bool> UpdateQuestion(int id, Question questionToUpdate, QuizGameUser user)
+    public async Task<bool> UpdateQuestion(Question questionToUpdate, QuizGameUser user)
     {
-        var question = await _questionsRepository.ReadById(id);
-        if( question is null || id != questionToUpdate.Id)
-            return false;
-        
-        if( question.Owner != null && question.Owner != user)
-            return false;
+        var question = await _questionsRepository.ReadById(questionToUpdate.Id) ?? 
+            throw new Exception("Question not found");
+
+        if ( question.Owner != null && question.Owner != user)
+            throw new Exception("Question is not owned by the user making the request");
 
         if( question.AssignedQuizzes != null && question.AssignedQuizzes.Count > 0)
-            return false;
+            throw new Exception("Cannot delete question with an existing Quiz");
 
         //change from dto to question?
 
@@ -72,15 +72,12 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
 
     public async Task<bool> DeleteQuestion(int id, QuizGameUser user)
     {
-        var question = await _questionsRepository.ReadById(id);
-        if( question is null)
-            return false;
-
-        if( question.Owner != null || question.Owner != user)
-            return false;
+        var question = await _questionsRepository.ReadById(id) ?? throw new Exception("Question not found");
+        if ( question.Owner != null || question.Owner != user)
+            throw new Exception("Question is not owned by the user making the request");
 
         if( question.AssignedQuizzes != null && question.AssignedQuizzes.Count > 0)
-            return false;
+            throw new Exception("Cannot delete question with an existing Quiz");
 
         if(await _questionsRepository.Delete(question))
             return true;
