@@ -9,8 +9,9 @@ public class QuizDto
     [Required, StringLength(100, MinimumLength = 3)]
     public string Name {get; set;}
     public string? Description {get; set;}
-    public ICollection<Question> Questions {get; set;}
-    public ICollection<Game>? Games {get; set;}
+    public IEnumerable<QuestionDto> Questions {get; set;}
+    public IEnumerable<int>? GamesId {get; set;}
+    public IEnumerable<string>? GamesName {get; set;}
     public QuizGameUserDto? Owner {get; set;}
 
     public QuizDto( Quiz quiz)
@@ -19,5 +20,8 @@ public class QuizDto
         Name = quiz.Name;
         Description = quiz.Description;
         Owner = quiz.Owner != null ? new QuizGameUserDto( quiz.Owner) : null;
+        Questions = quiz.Questions.Select(p => new QuestionDto(p));
+        GamesId = quiz.Games?.Select( p => p.Id);
+        GamesName = quiz.Games?.Select( p => p.Name);
     }
 }

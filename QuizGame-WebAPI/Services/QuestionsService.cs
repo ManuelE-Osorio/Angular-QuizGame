@@ -56,7 +56,7 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
         if( question is null || id != questionToUpdate.Id)
             return false;
         
-        if( question.Owner != null || question.Owner != user)
+        if( question.Owner != null && question.Owner != user)
             return false;
 
         if( question.AssignedQuizzes != null && question.AssignedQuizzes.Count > 0)

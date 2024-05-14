@@ -11,13 +11,13 @@ public class SeedData
             "How much is 2x2?", 
             new CorrectAnswer("4"), 
             [new IncorrectAnswer("2"), new IncorrectAnswer("6"), new IncorrectAnswer("8")]
-        ) {Category = "Basic Math", SecondsTimeout = 5},
+        ) {Category = "Basic Math", SecondsTimeout = 5, CreatedAt = DateTime.Now},
         new Question
         (
             "How much is 4x4?",
             new CorrectAnswer("16"),
             [new IncorrectAnswer("2"), new IncorrectAnswer("8"), new IncorrectAnswer("12")]
-        ) {Category = "Basic Math", SecondsTimeout = 5},
+        ) {Category = "Basic Math", SecondsTimeout = 5, CreatedAt = DateTime.Now},
         new Question
         (
             "How much is 3x3?",
@@ -35,13 +35,13 @@ public class SeedData
             "How much is 7x20?", 
             new CorrectAnswer("140"), 
             [new IncorrectAnswer("70"), new IncorrectAnswer("200"), new IncorrectAnswer("120")]
-        ) {Category = "Advanced Math", SecondsTimeout = 7, RelativeScore = 2},
+        ) {Category = "Advanced Math", SecondsTimeout = 7, RelativeScore = 2, CreatedAt = DateTime.Now.AddDays(-1)},
         new Question
         (
             "How much is 13x5?",
             new CorrectAnswer("65"),
             [new IncorrectAnswer("55"), new IncorrectAnswer("75"), new IncorrectAnswer("60")]
-        ) {Category = "Advanced Math", SecondsTimeout = 7, RelativeScore = 2},
+        ) {Category = "Advanced Math", SecondsTimeout = 7, RelativeScore = 2, CreatedAt = DateTime.Now.AddDays(-1)},
         new Question
         (
             "How much is 8x12?",
@@ -59,13 +59,13 @@ public class SeedData
             "What is the capital of Spain?", 
             new CorrectAnswer("Madrid"), 
             [new IncorrectAnswer("Paris"), new IncorrectAnswer("Buenos Aires"), new IncorrectAnswer("Beijing")]
-        ) {Category = "Capitals", SecondsTimeout = 5},
+        ) {Category = "Capitals", SecondsTimeout = 5, CreatedAt = DateTime.Now.AddDays(-2)},
         new Question
         (
             "What is the capital of Japan?",
             new CorrectAnswer("Tokyo"),
             [new IncorrectAnswer("Beijing"), new IncorrectAnswer("Berlin"), new IncorrectAnswer("Paris")]
-        ) {Category = "Capitals", SecondsTimeout = 5},
+        ) {Category = "Capitals", SecondsTimeout = 5, CreatedAt = DateTime.Now.AddDays(-2)},
         new Question
         (
             "What is the capital of Norway?",

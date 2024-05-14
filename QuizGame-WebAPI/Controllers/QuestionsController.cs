@@ -31,16 +31,16 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
 
     // }
 
-    [HttpPost]
-    [Route("/{id}/quiz")]
-    public async Task<IResult> AssignToQuiz(int id)
-    {
-        var user = await _userManager.GetUserAsync(User);
-        return TypedResults.Ok();
-    }
+    // [HttpPost]
+    // [Route("/{id}/quiz")]
+    // public async Task<IResult> AssignToQuiz(int id)
+    // {
+    //     var user = await _userManager.GetUserAsync(User);
+    //     return TypedResults.Ok();
+    // }
 
     [HttpPost]
-    public async Task<IResult> InsertQuestion(Question question, bool owned = true)
+    public async Task<IResult> InsertQuestion([FromBody] Question question, bool owned = true)
     {
         if(!ModelState.IsValid)
             return TypedResults.BadRequest();
@@ -53,7 +53,7 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
     }
 
     [HttpPut("{id}")]
-    public async Task<IResult> UpdateQuestion(int id, Question question)
+    public async Task<IResult> UpdateQuestion(int id, [FromBody] Question question)
     {
         if(!ModelState.IsValid)
             return TypedResults.BadRequest();

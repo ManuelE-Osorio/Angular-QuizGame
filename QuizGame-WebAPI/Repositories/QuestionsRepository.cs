@@ -40,8 +40,8 @@ public class QuestionsRepository(QuizGameContext context): IQuizGameRepository<Q
     public IEnumerable<Question> ReadAll(int? startIndex, int? pageSize)
     {
         return _context.Questions
-            .Include( p => p.CorrectAnswer)
-            .Include( p => p.IncorrectAnswers)
+            .Include(p => p.CorrectAnswer)
+            .Include(p => p.IncorrectAnswers)
             .AsEnumerable()
             .Skip(startIndex ?? 0)
             .Take(pageSize ?? 5);
