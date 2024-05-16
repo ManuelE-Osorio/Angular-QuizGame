@@ -20,7 +20,7 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
         Expression<Func<Question,bool>> expression = p => 
             (p.Owner == null || p.Owner == user) &&
             (category == null || p.Category == category) &&
-            (!isValidDate || p.CreatedAt == dateResult) &&
+            (!isValidDate || p.CreatedAt.Value.Date == dateResult.Date) &&  //compare by day
             (quiz == null || 
             ( p.AssignedQuizzes!= null && p.AssignedQuizzes.Select(p => p.Id).Contains((int) quiz)));
 
@@ -39,7 +39,7 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
         );
     }
 
-    public async Task<bool> AddQuestion(QuizGameUser user, bool owned, QuestionDto questionDto)
+    public async Task<bool> AddQuestion(QuizGameUser user, bool owned, QuestionDto questionDto) //switch to question
     {
         var question = new Question(questionDto);
         if(owned)
@@ -82,7 +82,7 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
     public async Task<bool> DeleteQuestion(int id, QuizGameUser user)
     {
         var question = await _questionsRepository.ReadById(id) ?? throw new Exception("Question not found");
-        if ( question.Owner != null || question.Owner != user)
+        if ( question.Owner != null && question.Owner.Id != user.Id)
             throw new Exception("Question is not owned by the user making the request");
 
         if( question.AssignedQuizzes != null && question.AssignedQuizzes.Count > 0)

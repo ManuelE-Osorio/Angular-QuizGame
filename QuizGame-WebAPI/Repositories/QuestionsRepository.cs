@@ -28,6 +28,7 @@ public class QuestionsRepository(QuizGameContext context): IQuizGameRepository<Q
         return _context.Questions
             .Include(p => p.CorrectAnswer)
             .Include(p => p.IncorrectAnswers)
+            .Include( p => p.AssignedQuizzes)
             .AsEnumerable()
             .Skip(startIndex ?? 0)
             .Take(pageSize ?? 5);
@@ -35,7 +36,9 @@ public class QuestionsRepository(QuizGameContext context): IQuizGameRepository<Q
 
     public async Task<Question?> ReadById(int id)
     {
-        return await _context.Questions.FindAsync(id);
+        return await _context.Questions
+            .Include(p => p.AssignedQuizzes)
+            .FirstOrDefaultAsync( p => p.Id == id);
     }
 
     public IEnumerable<Question> ReadAll(Expression<Func<Question,bool>> expression, int? startIndex, int? pageSize)
@@ -43,6 +46,7 @@ public class QuestionsRepository(QuizGameContext context): IQuizGameRepository<Q
         return _context.Questions.Where(expression)
             .Include( p => p.CorrectAnswer)
             .Include( p => p.IncorrectAnswers)
+            .Include( p => p.AssignedQuizzes)
             .AsEnumerable()
             .Skip(startIndex ?? 0)
             .Take(pageSize ?? 5);
