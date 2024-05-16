@@ -12,7 +12,7 @@ namespace QuizGame.Controllers;
 [ApiController]
 [ApiConventionType(typeof(DefaultApiConventions))]
 [Route("api/game")]
-public class GameController(GamesService gamesService, UserManager<QuizGameUser> userManager) : ControllerBase
+public class GamesController(GamesService gamesService, UserManager<QuizGameUser> userManager) : ControllerBase
 {
     private readonly GamesService _gamesService = gamesService;
     private readonly UserManager<QuizGameUser> _userManager = userManager;
@@ -26,7 +26,7 @@ public class GameController(GamesService gamesService, UserManager<QuizGameUser>
     }
 
     [HttpGet]
-    [Route("/{id}")]
+    [Route("{id}")]
     public async Task<IResult> GetGameById(int id)
     {
         var user = await _userManager.GetUserAsync(User);

@@ -5,7 +5,7 @@ using QuizGame.Models;
 
 namespace QuizGame.Repositories;
 
-public class GameRepository(QuizGameContext context): IQuizGameRepository<Game>
+public class GamesRepository(QuizGameContext context): IQuizGameRepository<Game>
 {
     private readonly QuizGameContext  _context = context;
 

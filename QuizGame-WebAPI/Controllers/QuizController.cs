@@ -25,7 +25,7 @@ public class QuizController(QuizzesService quizService, UserManager<QuizGameUser
     }
 
     [HttpGet]
-    [Route("/{id}")]
+    [Route("{id}")]
     public async Task<IResult> GetQuizById(int id)
     {
         var user = await _userManager.GetUserAsync(User);
@@ -43,7 +43,7 @@ public class QuizController(QuizzesService quizService, UserManager<QuizGameUser
     }
 
     [HttpPost]
-    public async Task<IResult> InsertQuiz([FromBody] Quiz quiz, bool owned = true)
+    public async Task<IResult> InsertQuiz([FromBody] QuizDto quiz, bool owned = true)
     {
         if(!ModelState.IsValid)
             return TypedResults.BadRequest();
@@ -67,8 +67,8 @@ public class QuizController(QuizzesService quizService, UserManager<QuizGameUser
     }
 
     [HttpPut]
-    [Route("/{id}")]
-    public async Task<IResult> UpdateQuiz(int id, [FromBody] Quiz quizToUpdate)
+    [Route("{id}")]
+    public async Task<IResult> UpdateQuiz(int id, [FromBody] QuizDto quizToUpdate)
     {
         if(!ModelState.IsValid || quizToUpdate.Id != id)
             return TypedResults.BadRequest();

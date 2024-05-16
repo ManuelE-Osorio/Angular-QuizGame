@@ -32,4 +32,16 @@ public class Question
         CorrectAnswer = answer;
         IncorrectAnswers = answers;
     }
+
+    public Question(QuestionDto questionDto)
+    {
+        QuestionText = questionDto.QuestionText;
+        QuestionImage = questionDto.QuestionImage;
+        SecondsTimeout = questionDto.SecondsTimeout;
+        RelativeScore = questionDto.RelativeScore;
+        Category = questionDto.Category;
+        CreatedAt = questionDto.CreatedAt;
+        CorrectAnswer = questionDto.CorrectAnswer;
+        IncorrectAnswers = questionDto.IncorrectAnswers;
+    }
 }

@@ -13,14 +13,16 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
 {
     private readonly IQuizGameRepository<Question> _questionsRepository = questionsRepository;
 
-    public async Task<PageData<QuestionDto>> GetAll(QuizGameUser user, string? category, string? date, int? startIndex, int? pageSize)
+    public async Task<PageData<QuestionDto>> GetAll(QuizGameUser user, string? category, int? quiz, string? date, int? startIndex, int? pageSize)
     {
         var isValidDate = DateTime.TryParse( date, out DateTime dateResult);
 
         Expression<Func<Question,bool>> expression = p => 
             (p.Owner == null || p.Owner == user) &&
             (category == null || p.Category == category) &&
-            (!isValidDate || p.CreatedAt == dateResult);
+            (!isValidDate || p.CreatedAt == dateResult) &&
+            (quiz == null || 
+            ( p.AssignedQuizzes!= null && p.AssignedQuizzes.Select(p => p.Id).Contains((int) quiz)));
 
         var questions = _questionsRepository
             .ReadAll(expression, startIndex, pageSize)
@@ -37,12 +39,12 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
         );
     }
 
-    public async Task<bool> AddQuestion(QuizGameUser user, bool owned, Question question)
+    public async Task<bool> AddQuestion(QuizGameUser user, bool owned, QuestionDto questionDto)
     {
+        var question = new Question(questionDto);
         if(owned)
             question.Owner = user;
 
-        //change from dto to question?
         var operationSuccesfull = await _questionsRepository.Create(question);
 
         if(operationSuccesfull)
@@ -51,18 +53,25 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
         return false;
     }
 
-    public async Task<bool> UpdateQuestion(Question questionToUpdate, QuizGameUser user)
+    public async Task<bool> UpdateQuestion(QuestionDto questionDto, QuizGameUser user)
     {
-        var question = await _questionsRepository.ReadById(questionToUpdate.Id) ?? 
+        var question = await _questionsRepository.ReadById(questionDto.Id) ?? 
             throw new Exception("Question not found");
 
         if ( question.Owner != null && question.Owner != user)
             throw new Exception("Question is not owned by the user making the request");
 
         if( question.AssignedQuizzes != null && question.AssignedQuizzes.Count > 0)
-            throw new Exception("Cannot delete question with an existing Quiz");
+            throw new Exception("Cannot update question with an existing Quiz");
 
-        //change from dto to question?
+        question.QuestionText = questionDto.QuestionText;
+        question.QuestionImage = questionDto.QuestionImage;
+        question.SecondsTimeout = questionDto.SecondsTimeout;
+        question.RelativeScore = questionDto.RelativeScore;
+        question.Category = questionDto.Category;
+        question.CreatedAt = questionDto.CreatedAt;
+        question.CorrectAnswer = questionDto.CorrectAnswer;
+        question.IncorrectAnswers = questionDto.IncorrectAnswers;
 
         if( await _questionsRepository.Update(question))
             return true;

@@ -7,9 +7,10 @@ using QuizGame.Repositories;
 
 namespace QuizGame.Services;
 
-public class QuizzesService(IQuizGameRepository<Quiz> quizzesRepository)
+public class QuizzesService(IQuizGameRepository<Quiz> quizzesRepository, IQuizGameRepository<Question> questionsRepository)
 {
     private readonly IQuizGameRepository<Quiz> _quizzesRepository = quizzesRepository;
+    private readonly IQuizGameRepository<Question> _questionsRepository = questionsRepository;
 
     public async Task<PageData<QuizDto>> GetAll(QuizGameUser user, string? name, int? startIndex, int? pageSize)
     {
@@ -41,12 +42,22 @@ public class QuizzesService(IQuizGameRepository<Quiz> quizzesRepository)
         return new QuizDto(quiz);
     }
 
-    public async Task<bool> AddQuiz(QuizGameUser user, bool owned, Quiz quiz)
+    public async Task<bool> AddQuiz(QuizGameUser user, bool owned, QuizDto quizDto)
     {
+        var quiz = new Quiz(quizDto);
         if(owned)
             quiz.Owner = user;
 
-        //change from dto to question?
+        if(quizDto.Questions is not null)
+        {
+            quiz.Questions = [];
+            foreach(int id in quizDto.Questions)
+            {
+                var question = await _questionsRepository.ReadById(id) ?? 
+                    throw new Exception("Question does not exists");
+                quiz.Questions.Add(question);
+            }
+        }
         
         if(await _quizzesRepository.Create(quiz))
             return true;
@@ -54,16 +65,28 @@ public class QuizzesService(IQuizGameRepository<Quiz> quizzesRepository)
         return false;
     }
 
-    public async Task<bool> UpdateQuiz(Quiz quizToUpdate, QuizGameUser user)
+    public async Task<bool> UpdateQuiz(QuizDto quizDto, QuizGameUser user)
     {
-        var quiz = await _quizzesRepository.ReadById(quizToUpdate.Id) ?? throw new Exception("Quiz not found");
+        var quiz = await _quizzesRepository.ReadById(quizDto.Id) ?? throw new Exception("Quiz not found");
         if ( quiz.Owner != null && quiz.Owner != user)
             throw new Exception("Quiz is not owned by the user making the request");
 
         if( quiz.Games != null && quiz.Games.Count > 0)
-            throw new Exception("Cannot delete quiz with assigned games.");
+            throw new Exception("Cannot update quiz with assigned games.");
 
-        //change from dto to question?
+        quiz.Id = quizDto.Id;
+        quiz.Name = quizDto.Name;
+        quiz.Description = quizDto.Description;
+        if(quizDto.Questions is not null)
+        {
+            quiz.Questions = [];
+            foreach(int id in quizDto.Questions)
+            {
+                var question = await _questionsRepository.ReadById(id) ?? 
+                    throw new Exception("Question does not exists");
+                quiz.Questions.Add(question);
+            }
+        }
 
         if( await _quizzesRepository.Update(quiz))
             return true;
