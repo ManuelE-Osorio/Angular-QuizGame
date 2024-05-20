@@ -11,7 +11,7 @@ namespace QuizGame.Controllers;
 [ApiController]
 [ApiConventionType(typeof(DefaultApiConventions))]
 [Route("api/quiz")]
-public class QuizController(QuizzesService quizService, UserManager<QuizGameUser> userManager) : ControllerBase
+public class QuizzesController(QuizzesService quizService, UserManager<QuizGameUser> userManager) : ControllerBase
 {
     private readonly QuizzesService _quizService = quizService;
     private readonly UserManager<QuizGameUser> _userManager = userManager;
@@ -100,6 +100,31 @@ public class QuizController(QuizzesService quizService, UserManager<QuizGameUser
         try
         {
             operationSuccesfull = await _quizService.DeleteQuiz(id, user!);
+        }
+        catch(Exception ex)
+        {
+            return TypedResults.BadRequest(ex.Message);
+        }
+
+        if(operationSuccesfull)
+            return TypedResults.Ok();
+        
+        return TypedResults.StatusCode(500);
+    }
+
+    [HttpPut]
+    [Route("{id}/questions")]
+    public async Task<IResult> InsertQuizQuestions(int id, [FromBody] List<int> questionsId)
+    {
+        if(!ModelState.IsValid)
+            return TypedResults.BadRequest();
+
+        var user = await _userManager.GetUserAsync(User);
+
+        bool operationSuccesfull;
+        try
+        {
+            operationSuccesfull = await _quizService.AddQuestionsToQuiz(user!, id, questionsId);
         }
         catch(Exception ex)
         {

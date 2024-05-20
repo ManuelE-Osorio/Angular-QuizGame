@@ -7,7 +7,7 @@ public class Game
     public int Id {get; set;}
 
     [Required, StringLength(100, MinimumLength = 3)]
-    public string Name {get; set;}
+    public string? Name {get; set;}
 
     [Required, Range(0, 100)]
     public int PassingScore {get; set;} = 0;
@@ -16,7 +16,8 @@ public class Game
     [DataType(DataType.DateTime)]
     public DateTime? DueDate {get; set;}
     
-    public Quiz Quiz {get; set;}
+    [Required]
+    public Quiz? Quiz {get; set;}
     public ICollection<QuizGameUser>? AssignedUsers {get; set;}
     public QuizGameUser? Owner {get; set;}
 
@@ -30,6 +31,15 @@ public class Game
         Name = name;
         Quiz = quiz;
     }
+
+    public Game(GameDto gameDto)
+    {
+        Id = gameDto.Id;
+        Name = gameDto.Name;
+        PassingScore = gameDto.PassingScore;
+        DueDate = gameDto.DueDate;
+    }
+
 }
 
 public class DateRangeAttribute : RangeAttribute

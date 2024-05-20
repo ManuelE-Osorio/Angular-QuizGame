@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Identity.Client.AppConfig;
 using QuizGame.Data;
 using QuizGame.Models;
 using QuizGame.Repositories;
@@ -13,16 +14,16 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
 {
     private readonly IQuizGameRepository<Question> _questionsRepository = questionsRepository;
 
-    public async Task<PageData<QuestionDto>> GetAll(QuizGameUser user, string? category, int? quiz, string? date, int? startIndex, int? pageSize)
+    public async Task<PageData<QuestionDto>> GetAll(QuizGameUser user, string? category, string? date, int? startIndex, int? pageSize)
     {
         var isValidDate = DateTime.TryParse( date, out DateTime dateResult);
 
         Expression<Func<Question,bool>> expression = p => 
             (p.Owner == null || p.Owner == user) &&
-            (category == null || p.Category == category) &&
-            (!isValidDate || p.CreatedAt.Value.Date == dateResult.Date) &&  //compare by day
-            (quiz == null || 
-            ( p.AssignedQuizzes!= null && p.AssignedQuizzes.Select(p => p.Id).Contains((int) quiz)));
+            (category == null ||
+            (p.Category != null && p.Category.Contains(category))) &&
+            (!isValidDate || 
+            (p.CreatedAt != null && p.CreatedAt.Value.Date == dateResult.Date));
 
         var questions = _questionsRepository
             .ReadAll(expression, startIndex, pageSize)
@@ -39,7 +40,7 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
         );
     }
 
-    public async Task<bool> AddQuestion(QuizGameUser user, bool owned, QuestionDto questionDto) //switch to question
+    public async Task<bool> AddQuestion(QuizGameUser user, bool owned, QuestionDto questionDto)
     {
         var question = new Question(questionDto);
         if(owned)
@@ -58,7 +59,7 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
         var question = await _questionsRepository.ReadById(questionDto.Id) ?? 
             throw new Exception("Question not found");
 
-        if ( question.Owner != null && question.Owner != user)
+        if ( question.Owner != null && question.Owner.Id != user.Id)
             throw new Exception("Question is not owned by the user making the request");
 
         if( question.AssignedQuizzes != null && question.AssignedQuizzes.Count > 0)

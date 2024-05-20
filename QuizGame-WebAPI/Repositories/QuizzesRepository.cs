@@ -26,22 +26,26 @@ public class QuizzesRepository(QuizGameContext context): IQuizGameRepository<Qui
     public IEnumerable<Quiz> ReadAll(int? startIndex, int? pageSize)
     {
         return _context.Quizzes
-            .AsEnumerable()
             .Skip(startIndex ?? 0)
-            .Take(pageSize ?? 5);
+            .Take(pageSize ?? 5)
+            .AsEnumerable();
     }
 
     public async Task<Quiz?> ReadById(int id)
     {
-        return await _context.Quizzes.FindAsync(id);
+        return await _context.Quizzes
+            .Include(p => p.Questions)
+            .Include( p => p.Owner)
+            .FirstOrDefaultAsync( p => p.Id == id);
     }
 
     public IEnumerable<Quiz> ReadAll(Expression<Func<Quiz,bool>> expression, int? startIndex, int? pageSize)
     {
         return _context.Quizzes.Where(expression)
-            .AsEnumerable()
             .Skip(startIndex ?? 0)
-            .Take(pageSize ?? 5);
+            .Take(pageSize ?? 5)
+            .AsEnumerable();
+
     }
 
     public async Task<int> Count(Expression<Func<Quiz, bool>>? expression)

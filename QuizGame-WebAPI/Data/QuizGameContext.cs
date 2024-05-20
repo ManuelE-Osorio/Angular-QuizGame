@@ -20,6 +20,8 @@ public class QuizGameContext(DbContextOptions<QuizGameContext> options) : Identi
 
         modelBuilder.Entity<Quiz>( p => 
         {
+            p.Property( p => p.Name).IsRequired();
+
             p.HasMany( p => p.Questions)
                 .WithMany( p => p.AssignedQuizzes);
 
@@ -32,7 +34,7 @@ public class QuizGameContext(DbContextOptions<QuizGameContext> options) : Identi
         {
             p.HasOne( p => p.Quiz)
                 .WithMany( p => p.Games)
-                .IsRequired(false);
+                .IsRequired(true);
 
             p.HasOne( p => p.Owner)
                 .WithMany( p => p.OwnedGames)
@@ -44,6 +46,9 @@ public class QuizGameContext(DbContextOptions<QuizGameContext> options) : Identi
 
         modelBuilder.Entity<Question>( p => 
         {
+            p.Property( p => p.QuestionText)
+                .IsRequired();
+                
             p.HasOne( p => p.CorrectAnswer)
                 .WithOne()
                 .HasForeignKey<CorrectAnswer>( "QuestionId")

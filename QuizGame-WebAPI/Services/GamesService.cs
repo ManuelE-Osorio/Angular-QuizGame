@@ -1,20 +1,28 @@
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Identity;
 using QuizGame.Models;
 using QuizGame.Repositories;
 
 namespace QuizGame.Services;
 
-public class GamesService(IQuizGameRepository<Game> gamesRepository) : IQuizGameService
+public class GamesService(
+    IQuizGameRepository<Game> gamesRepository, 
+    IQuizGameRepository<Quiz> quizzesRepository,
+    UserManager<QuizGameUser> userManager) : IQuizGameService
 {
     private readonly IQuizGameRepository<Game> _gamesRepository = gamesRepository;
+    private readonly IQuizGameRepository<Quiz> _quizzesRepository = quizzesRepository;
+    private readonly UserManager<QuizGameUser> _userManager = userManager;
     public async Task<PageData<GameDto>> GetAll(QuizGameUser user, string? name, string? date, int? startIndex, int? pageSize)
     {
         var isValidDate = DateTime.TryParse( date, out DateTime dateResult);
 
         Expression<Func<Game,bool>> expression = p => 
             (p.Owner == null || p.Owner == user) &&
-            (name == null || p.Name == name) &&
-            (!isValidDate || p.DueDate == dateResult);
+            (name == null || 
+            (p.Name != null && p.Name.Contains(name))) &&
+            (!isValidDate || 
+            (p.DueDate != null && p.DueDate.Value.Date == dateResult.Date));
 
         var games = _gamesRepository
             .ReadAll(expression, startIndex, pageSize)
@@ -34,18 +42,25 @@ public class GamesService(IQuizGameRepository<Game> gamesRepository) : IQuizGame
     public async Task<GameDto> GetById(QuizGameUser user, int id)
     {
         var game = await _gamesRepository.ReadById(id) ?? throw new Exception("Game not found");
-        if (game.Owner != null && game.Owner != user)
-            throw new Exception("Quiz is not owned by the user making the request");
+        if (game.Owner != null && game.Owner.Id != user.Id)
+            throw new Exception("Game is not owned by the user making the request");
 
         return new GameDto(game);
     }
 
-    public async Task<bool> AddGame(QuizGameUser user, bool owned, Game game)
+    public async Task<bool> AddGame(QuizGameUser user, bool owned, GameDto gameDto)
     {
+        var game = new Game(gameDto);
         if(owned)
             game.Owner = user;
 
-        //change from dto to question?
+        var quiz = await _quizzesRepository.ReadById(gameDto.QuizId) ?? 
+            throw new Exception ("Quiz Id does not exists");
+
+        if (quiz.Owner != null && quiz.Owner.Id != user.Id)
+            throw new Exception("Quiz is not owned by the user making the request");
+        
+        game.Quiz = quiz;
         var operationSuccesfull = await _gamesRepository.Create(game);
 
         if(operationSuccesfull)
@@ -54,19 +69,41 @@ public class GamesService(IQuizGameRepository<Game> gamesRepository) : IQuizGame
         return false;
     }
 
-    public async Task<bool> UpdateGame(Game gameToUpdate, QuizGameUser user)
+    public async Task<bool> AddUsersToGame(QuizGameUser user, int id, List<string> assignedUsers )
     {
-        var game = await _gamesRepository.ReadById(gameToUpdate.Id) ?? 
+        var game = await _gamesRepository.ReadById(id) ?? throw new Exception("Game not found");
+        if (game.Owner != null && game.Owner.Id != user.Id)
+            throw new Exception("Game is not owned by the user making the request");
+
+        game.AssignedUsers = [];
+        foreach(string usersId in assignedUsers)
+        {
+            var assignedUser = await _userManager.FindByIdAsync(usersId) ?? 
+                throw new Exception("User Id does not exists");
+            game.AssignedUsers.Add(assignedUser);
+        }
+
+        if(await _gamesRepository.Update(game))
+            return true;
+        
+        return false;
+    }
+
+    public async Task<bool> UpdateGame(GameDto gameDto, QuizGameUser user)
+    {
+        var game = await _gamesRepository.ReadById(gameDto.Id) ?? 
             throw new Exception("Game not found");
 
-        if ( game.Owner != null && game.Owner != user)
+        if ( game.Owner != null && game.Owner.Id != user.Id)
             throw new Exception("Game is not owned by the user making the request");
 
         if( game.AssignedUsers != null && game.AssignedUsers.Count > 0)
-            throw new Exception("Cannot delete game with assigned users.");
+            throw new Exception("Cannot update game with assigned users.");
 
-        //change from dto to question?
-
+        game.Name = gameDto.Name;
+        game.PassingScore = gameDto.PassingScore;
+        game.DueDate = gameDto.DueDate;
+        
         if( await _gamesRepository.Update(game))
             return true;
 
@@ -76,7 +113,8 @@ public class GamesService(IQuizGameRepository<Game> gamesRepository) : IQuizGame
     public async Task<bool> DeleteGame(int id, QuizGameUser user)
     {
         var game = await _gamesRepository.ReadById(id) ?? throw new Exception("Game not found");
-        if ( game.Owner != null || game.Owner != user)
+
+        if ( game.Owner != null && game.Owner.Id != user.Id)
             throw new Exception("Game is not owned by the user making the request");
 
         if( game.AssignedUsers != null && game.AssignedUsers.Count > 0)

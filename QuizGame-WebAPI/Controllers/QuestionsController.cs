@@ -18,10 +18,10 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
     private readonly UserManager<QuizGameUser> _userManager = userManager;
 
     [HttpGet]
-    public async Task<IResult> GetAllQuestions(string? category, int? quiz, string? date, int? startIndex, int? pageSize) 
+    public async Task<IResult> GetAllQuestions(string? category, string? date, int? startIndex, int? pageSize) 
     {
         var user = await _userManager.GetUserAsync(User);
-        var questions = await _questionsService.GetAll(user!, category, quiz, date, startIndex, pageSize);
+        var questions = await _questionsService.GetAll(user!, category, date, startIndex, pageSize);
         return TypedResults.Ok(questions);
     }
 
@@ -42,7 +42,7 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
     public async Task<IResult> UpdateQuestion(int id, [FromBody] QuestionDto question)
     {
         if(!ModelState.IsValid || id != question.Id)
-            return TypedResults.BadRequest(ModelState);
+            return TypedResults.BadRequest();
 
         var user = await _userManager.GetUserAsync(User);
         

@@ -44,7 +44,7 @@ public class GamesController(GamesService gamesService, UserManager<QuizGameUser
     }
 
     [HttpPost]
-    public async Task<IResult> InsertGame([FromBody] Game game, bool owned = true)
+    public async Task<IResult> InsertGame([FromBody] GameDto game, bool owned = true)
     {
         if(!ModelState.IsValid)
             return TypedResults.BadRequest();
@@ -57,7 +57,7 @@ public class GamesController(GamesService gamesService, UserManager<QuizGameUser
     }
 
     [HttpPut("{id}")]
-    public async Task<IResult> UpdateGame(int id, [FromBody] Game game)
+    public async Task<IResult> UpdateGame(int id, [FromBody] GameDto game)
     {
         if(!ModelState.IsValid || id != game.Id)
             return TypedResults.BadRequest();
@@ -89,6 +89,31 @@ public class GamesController(GamesService gamesService, UserManager<QuizGameUser
         try
         {
             operationSuccesfull = await _gamesService.DeleteGame(id, user!);
+        }
+        catch(Exception ex)
+        {
+            return TypedResults.BadRequest(ex.Message);
+        }
+
+        if(operationSuccesfull)
+            return TypedResults.Ok();
+        
+        return TypedResults.StatusCode(500);
+    }
+
+    [HttpPut]
+    [Route("{id}/users")]
+    public async Task<IResult> InserGameUsers(int id, [FromBody] List<string> assignedUsers)
+    {
+        if(!ModelState.IsValid)
+            return TypedResults.BadRequest();
+
+        var user = await _userManager.GetUserAsync(User);
+
+        bool operationSuccesfull;
+        try
+        {
+            operationSuccesfull = await _gamesService.AddUsersToGame(user!, id, assignedUsers);
         }
         catch(Exception ex)
         {
