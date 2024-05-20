@@ -27,7 +27,7 @@ public class GamesService(
         var games = _gamesRepository
             .ReadAll(expression, startIndex, pageSize)
             .OrderBy( p => p.DueDate);
-        
+            
         var totalGames = await _gamesRepository.Count(expression);
 
         return new PageData<GameDto>

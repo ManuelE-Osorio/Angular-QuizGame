@@ -31,8 +31,8 @@ public class GameDto
         Name = game.Name;
         PassingScore = game.PassingScore;
         DueDate = game.DueDate;
-        QuizId = game.Quiz.Id;
-        QuizName = game.Quiz.Name;
+        QuizId = game.Quiz != null ? game.Quiz.Id : 0;
+        QuizName = game.Quiz?.Name;
         AssignedUsers = game.AssignedUsers?.Select(p => new QuizGameUserDto(p));
         Owner = game.Owner != null ? new QuizGameUserDto(game.Owner) : null;
     }

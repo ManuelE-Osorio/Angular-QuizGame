@@ -40,22 +40,28 @@ public class GamesRepository(QuizGameContext context): IQuizGameRepository<Game>
     public IEnumerable<Game> ReadAll(int? startIndex, int? pageSize)
     {
         return _context.Games
-            .AsEnumerable()
+            .Include( p => p.Quiz)
             .Skip(startIndex ?? 0)
-            .Take(pageSize ?? 5);
+            .Take(pageSize ?? 5)
+            .AsEnumerable();
     }
 
     public IEnumerable<Game> ReadAll(Expression<Func<Game,bool>> expression, int? startIndex, int? pageSize)
     {
         return _context.Games.Where(expression)
-            .AsEnumerable()
+            .Include( p => p.Quiz)
             .Skip(startIndex ?? 0)
-            .Take(pageSize ?? 5);
+            .Take(pageSize ?? 5)
+            .AsEnumerable();
     }
 
     public async Task<Game?> ReadById(int id)
     {
-        return await _context.Games.FindAsync(id);
+        return await _context.Games
+            .Include( p => p.AssignedUsers)
+            .Include( p => p.Quiz)
+            .Include( p => p.Owner)
+            .FirstOrDefaultAsync( p => p.Id == id);
     }
 
     public async Task<int> Count(Expression<Func<Game, bool>>? expression)

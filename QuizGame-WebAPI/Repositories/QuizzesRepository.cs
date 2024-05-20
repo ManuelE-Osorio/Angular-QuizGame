@@ -35,6 +35,7 @@ public class QuizzesRepository(QuizGameContext context): IQuizGameRepository<Qui
     {
         return await _context.Quizzes
             .Include(p => p.Questions)
+            .Include( p => p.Games)
             .Include( p => p.Owner)
             .FirstOrDefaultAsync( p => p.Id == id);
     }

@@ -93,7 +93,7 @@ public class SeedData
         DueDate = DateTime.Now.AddDays(1), 
         PassingScore = 60
     };
-    private static readonly Game AdvancedMathGame = new("Basic Math Game", AdvancedMathQuiz) 
+    private static readonly Game AdvancedMathGame = new("Advanced Math Game", AdvancedMathQuiz) 
     {
         DueDate = DateTime.Now.AddDays(1), 
         PassingScore = 50
