@@ -12,7 +12,7 @@ public class QuizDto
     public string? Description {get; set;}
     public IEnumerable<QuestionDto>? Questions {get; set;}
     public IEnumerable<int>? GamesId {get; set;}
-    public IEnumerable<string>? GamesName {get; set;}
+    public IEnumerable<string?>? GamesName {get; set;}
     public QuizGameUserDto? Owner {get; set;}
 
     [JsonConstructor]

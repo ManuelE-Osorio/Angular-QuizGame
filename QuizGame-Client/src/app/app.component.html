@@ -1,0 +1,46 @@
+<main>
+<header>
+  <mat-toolbar color="primary">
+    <button mat-icon-button (click)="sidenav.toggle()">
+      <mat-icon>menu</mat-icon>
+    </button>
+    <span>Quiz Game</span>
+
+    <span class="spacer"></span>
+
+    <a mat-icon-button target="_blank" href="https://github.com/ManuelE-Osorio">
+      <mat-icon svgIcon="github" aria-hidden="false"></mat-icon>
+    </a>
+    <a mat-icon-button target="_blank" href="https://linkedin.com/in/manuel-osorio-0504a5222/">
+      <mat-icon svgIcon="linkedin" aria-hidden="false"></mat-icon>
+    </a>
+  </mat-toolbar>
+</header>
+
+<body>
+  <mat-sidenav-container class="container">
+    
+    <mat-sidenav #sidenav class="sidenav" mode="over">
+      <div>
+        <button class="full-width" mat-flat-button routerLink="admin" (click)="sidenav.close()" color="primary">
+          <mat-icon>admin_panel_settings</mat-icon>
+          Admin
+        </button>
+      </div>
+      
+      <div>
+        <button class="full-width" mat-flat-button routerLink="user" (click)="sidenav.close()" color="primary">
+          <mat-icon>person</mat-icon>
+          User
+        </button>
+      </div>
+    </mat-sidenav>
+
+    <mat-sidenav-content class="sidenav-content">
+      <router-outlet />
+    </mat-sidenav-content>
+  
+  </mat-sidenav-container>
+</body>
+
+</main>
