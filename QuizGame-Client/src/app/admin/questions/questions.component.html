@@ -1,0 +1,18 @@
+@if (questions != null) {
+    <mat-accordion multi="false">
+        @for (question of questions.data; track $index) {
+            <app-questiondetails [question]="question"></app-questiondetails>
+        }
+    </mat-accordion>
+    
+    <mat-paginator [pageSizeOptions]="[5]"
+        [hidePageSize]="true"
+        showFirstLastButtons
+        (page)="onChangePage($event)"
+        [length]="questions.totalRecords">
+    </mat-paginator>
+}
+@else {
+    <mat-spinner mode="indeterminate"></mat-spinner>
+}
+

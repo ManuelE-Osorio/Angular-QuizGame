@@ -6,6 +6,7 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatListModule} from '@angular/material/list';
 import { DomSanitizer } from '@angular/platform-browser';
+import { AuthenticationComponent } from './authentication/authentication/authentication.component';
 
 
 @Component({
@@ -18,7 +19,8 @@ import { DomSanitizer } from '@angular/platform-browser';
     MatIconModule,
     MatButtonModule,
     MatSidenavModule,
-    MatListModule
+    MatListModule,
+    AuthenticationComponent
   ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

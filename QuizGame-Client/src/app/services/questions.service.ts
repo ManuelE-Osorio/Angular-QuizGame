@@ -28,12 +28,13 @@ export class QuestionsService {
       withCredentials: true,
       params: options
     }).pipe(
-      tap( {next: () => console.log(`Items fetched succesfully`, `success`)}),
+      tap( {next: () => console.log(`Items fetched succesfully`)}),
       catchError( () => scheduled([null], asyncScheduler)),
       map( (resp) => {
         if( resp != null) {
           return {
           data : resp.data.map( question => {
+            question.createdAt = new Date(question.createdAt);
             return question; }),
           currentPage : resp.currentPage,
           pageSize: resp.pageSize,

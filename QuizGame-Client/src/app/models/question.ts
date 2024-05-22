@@ -1,4 +1,5 @@
-import { Answer } from "./answer";
+import { FormArray, FormControl, FormGroup } from "@angular/forms";
+import { Answer, AnswerForm } from "./answer";
 import { User } from "./user";
 
 export interface Question{
@@ -13,4 +14,16 @@ export interface Question{
     incorrectAnswers: Answer[];
     owner: User;
     assignedQuizzes: number[];
+}
+
+export interface QuestionForm{
+    id: FormControl<number|null>;
+    questionText: FormControl<string|null>;
+    questionImage: FormControl<string|null>;
+    secondsTimeout: FormControl<number|null>;
+    relativeScore: FormControl<number|null>;
+    category: FormControl<string|null>;
+    createdAt: FormControl<string|null>;
+    correctAnswer: FormGroup<AnswerForm>;
+    incorrectAnswers: FormArray<FormGroup<AnswerForm>>;
 }

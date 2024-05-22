@@ -1,0 +1,7 @@
+@if (isLoggedIn) {
+    <app-log-out></app-log-out>
+}
+@else {
+    <button mat-button routerLink="login">Log In</button>
+    <button mat-button routerLink="create">Register</button>
+}

@@ -1,0 +1,32 @@
+@if (question != null) {
+
+  <mat-expansion-panel>
+    <mat-expansion-panel-header>
+      <mat-panel-title>{{question.id}}</mat-panel-title>
+      <mat-panel-description>{{question.questionText}}</mat-panel-description>
+    </mat-expansion-panel-header>
+  
+    <ng-template matExpansionPanelContent>
+      <mat-list>
+        <mat-list-item>Correct Answer: </mat-list-item>
+        <mat-divider></mat-divider><mat-divider></mat-divider>
+        <mat-list-item>{{question.correctAnswer.answerText}}</mat-list-item>
+        <mat-divider></mat-divider><mat-divider></mat-divider>
+        <mat-list-item>Incorrect Answers:</mat-list-item>
+        <mat-divider></mat-divider>
+
+        @for (answer of question.incorrectAnswers; track $index) {
+          <mat-divider></mat-divider>
+          <mat-list-item>{{answer.answerText}}</mat-list-item>
+        }
+      </mat-list>
+      <mat-action-row>
+        <button mat-flat-button color="primary" (click)="openDialog(question)">Edit</button>
+        <button mat-flat-button color="warn">Delete</button>
+      </mat-action-row>
+    </ng-template>
+  </mat-expansion-panel>
+}
+
+
+  
