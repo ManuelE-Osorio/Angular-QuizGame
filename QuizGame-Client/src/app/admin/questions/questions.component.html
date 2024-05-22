@@ -1,3 +1,5 @@
+<button mat-flat-button color="primary" (click)="newQuestion()">Add</button>
+
 @if (questions != null) {
     <mat-accordion multi="false">
         @for (question of questions.data; track $index) {

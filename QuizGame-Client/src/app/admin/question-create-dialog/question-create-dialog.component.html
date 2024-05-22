@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>Question {{question.id}}</h2>
+<h2 mat-dialog-title>New Question</h2>
 <mat-dialog-content>
   
   <!-- <mat-form-field>
@@ -69,7 +69,7 @@
       }
     </div>
 
-    @if(!updateSuccessful) {
+    @if(!createdSuccessful) {
       <mat-error >{{errorMessage}}</mat-error>
     }
   
@@ -78,5 +78,5 @@
 </mat-dialog-content>
 <mat-dialog-actions>
   <button mat-flat-button color="warn" mat-dialog-close>Close</button>
-  <button mat-flat-button color="primary" [disabled]="!form.valid" (click)="submitForm()" >Update</button>
+  <button mat-flat-button color="primary" [disabled]="!form.valid" (click)="submitForm()" >Create</button>
 </mat-dialog-actions>

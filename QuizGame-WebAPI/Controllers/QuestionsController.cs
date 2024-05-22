@@ -26,14 +26,15 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
     }
 
     [HttpPost]
-    public async Task<IResult> InsertQuestion([FromBody] QuestionDto question, bool owned = true)
+    public async Task<IResult> InsertQuestion([FromBody] QuestionDto questionDto, bool owned = true)
     {
         if(!ModelState.IsValid)
             return TypedResults.BadRequest();
 
         var user = await _userManager.GetUserAsync(User);
-        if(await _questionsService.AddQuestion(user!, owned, question))
-            return TypedResults.Created($"/{question.Id}", question);
+        var question = await _questionsService.AddQuestion(user!, owned, questionDto);
+        if(question is not null)
+            return TypedResults.Created($"/{question.Id}", new QuestionDto(question));
         
         return TypedResults.StatusCode(500);
     }

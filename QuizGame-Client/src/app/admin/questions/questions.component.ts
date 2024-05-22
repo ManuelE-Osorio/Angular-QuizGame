@@ -17,6 +17,8 @@ import {
   MatDialogClose,
 } from '@angular/material/dialog';
 import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
+import { QuestionCreateDialogComponent } from '../question-create-dialog/question-create-dialog.component';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-questions',
@@ -27,7 +29,8 @@ import { QuestionDialogComponent } from '../question-dialog/question-dialog.comp
     MatProgressSpinnerModule,
     MatPaginatorModule,
     QuestionDetailsComponent,
-    MatExpansionModule
+    MatExpansionModule,
+    MatButtonModule
   ],
   templateUrl: './questions.component.html',
   styleUrl: './questions.component.css'
@@ -55,5 +58,18 @@ export class QuestionsComponent implements OnInit{
 
   onChangePage(event: PageEvent) {
     this.getLogs(event.pageIndex*event.pageSize); 
+  }
+
+  addQuestion(question: Question){
+    this.questions?.data.push(question)
+  }
+
+  newQuestion() {
+    this.logDialog.open(QuestionCreateDialogComponent, {
+      enterAnimationDuration: '400',
+      exitAnimationDuration: '400',
+    }).afterClosed().subscribe( (response) => {
+      this.addQuestion(response.data)
+    });
   }
 }

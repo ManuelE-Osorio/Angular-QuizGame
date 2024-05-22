@@ -17,7 +17,7 @@ export interface Question{
 }
 
 export interface QuestionForm{
-    id: FormControl<number|null>;
+    id?: FormControl<number|null>;
     questionText: FormControl<string|null>;
     questionImage: FormControl<string|null>;
     secondsTimeout: FormControl<number|null>;

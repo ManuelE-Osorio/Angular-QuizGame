@@ -6,7 +6,7 @@ public class Answer
 {
     public int Id {get; set;}
 
-    [Required, StringLength(500, MinimumLength = 3)]
+    [Required, StringLength(500, MinimumLength = 1)]
     public string AnswerText {get; set;}
     public string? AnswerImage {get; set;}
     private Answer() 

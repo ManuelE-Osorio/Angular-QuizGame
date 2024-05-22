@@ -1,4 +1,4 @@
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Question } from '../models/question';
 import { PageData } from '../models/pagedata';
@@ -43,6 +43,43 @@ export class QuestionsService {
         }
         return null;  
       }),
+    );
+  }
+
+  UpdateQuestion(question: Question) : Observable<boolean | string> {
+    
+    return this.http.put<boolean | string>(`${this.baseUrl}/${question.id}`, question, {
+      responseType: 'json',
+      withCredentials: true,
+      observe: 'response'
+    }).pipe(
+      tap( {next: () => console.log(`Items updated succesfully`)}),
+      catchError( (resp) => scheduled([resp.error], asyncScheduler)),
+      map( (resp) => {
+        if (resp.status == 200){
+          return true;
+        }
+        return resp;
+      })
+    );
+  }
+
+  CreateQuestion(question: Question) : Observable<number | string> {
+    
+    return this.http.post<number | string>(`${this.baseUrl}`, question, {
+      responseType: 'json',
+      withCredentials: true,
+      observe: 'response'
+    }).pipe(
+      tap( {next: () => console.log(`Items created succesfully`)}),
+      catchError( (resp) => scheduled([resp.error], asyncScheduler)),
+      map( (resp) => {
+        console.log(resp)
+        if (resp.status == 201){
+          return resp.body.id;
+        }
+        return resp;
+      })
     );
   }
 

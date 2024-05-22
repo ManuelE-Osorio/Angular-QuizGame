@@ -7,7 +7,7 @@ export interface Answer{
 }
 
 export interface AnswerForm{
-    id: FormControl<number|null>;
+    id?: FormControl<number|null>;
     answerText: FormControl<string|null>;
     answerImage: FormControl<string|null>;
 }

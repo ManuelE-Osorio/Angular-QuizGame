@@ -40,7 +40,7 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
         );
     }
 
-    public async Task<bool> AddQuestion(QuizGameUser user, bool owned, QuestionDto questionDto)
+    public async Task<Question?> AddQuestion(QuizGameUser user, bool owned, QuestionDto questionDto)
     {
         var question = new Question(questionDto);
         if(owned)
@@ -49,9 +49,9 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
         var operationSuccesfull = await _questionsRepository.Create(question);
 
         if(operationSuccesfull)
-            return true;
+            return question;
         
-        return false;
+        return null;
     }
 
     public async Task<bool> UpdateQuestion(QuestionDto questionDto, QuizGameUser user)

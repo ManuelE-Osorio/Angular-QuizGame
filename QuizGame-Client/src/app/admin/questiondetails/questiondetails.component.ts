@@ -28,12 +28,9 @@ export class QuestionDetailsComponent {
 
   openDialog(question: Question){
     this.logDialog.open(QuestionDialogComponent, {
-      width: '400px',
       enterAnimationDuration: '400',
       exitAnimationDuration: '400',
       data: question
     }).afterClosed();
   }
-
-
 }
