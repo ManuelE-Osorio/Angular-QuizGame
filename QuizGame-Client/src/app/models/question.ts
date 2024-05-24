@@ -13,7 +13,7 @@ export interface Question{
     correctAnswer: Answer;
     incorrectAnswers: Answer[];
     owner: User;
-    assignedQuizzes: number[];
+    assignedQuizzes: string[];
 }
 
 export interface QuestionForm{

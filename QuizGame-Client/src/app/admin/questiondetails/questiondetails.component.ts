@@ -6,6 +6,7 @@ import { MatButton } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
 import { MatDialog } from '@angular/material/dialog';
 import { QuestionDialogComponent } from '../question-dialog/question-dialog.component';
+import { QuestionsService } from '../../services/questions.service';
 
 @Component({
   selector: 'app-questiondetails',
@@ -24,6 +25,7 @@ export class QuestionDetailsComponent {
   
   constructor(
     public logDialog: MatDialog,
+    private questionsService: QuestionsService
   ) {}
 
   openDialog(question: Question){
@@ -32,5 +34,9 @@ export class QuestionDetailsComponent {
       exitAnimationDuration: '400',
       data: question
     }).afterClosed();
+  }
+
+  deleteQuestion(question: Question){
+    this.questionsService.DeleteQuestion(question.id).subscribe()
   }
 }

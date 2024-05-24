@@ -23,7 +23,7 @@ public class QuestionDto
     [Required]
     public ICollection<IncorrectAnswer>? IncorrectAnswers {get; set;}
     public QuizGameUserDto? Owner {get; set;}
-    public IEnumerable<int>? AssignedQuizzes {get; set;}
+    public IEnumerable<string>? AssignedQuizzes {get; set;}
 
     [JsonConstructor]
     public QuestionDto() {}
@@ -39,6 +39,6 @@ public class QuestionDto
         CorrectAnswer = question.CorrectAnswer;
         IncorrectAnswers = question.IncorrectAnswers;
         Owner = question.Owner != null ? new QuizGameUserDto(question.Owner) : null ;
-        AssignedQuizzes = question.AssignedQuizzes?.Select( p => p.Id);
+        AssignedQuizzes = question.AssignedQuizzes?.Select( p => p.Name!);
     } 
 }

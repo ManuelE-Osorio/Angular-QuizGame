@@ -74,9 +74,26 @@ export class QuestionsService {
       tap( {next: () => console.log(`Items created succesfully`)}),
       catchError( (resp) => scheduled([resp.error], asyncScheduler)),
       map( (resp) => {
-        console.log(resp)
         if (resp.status == 201){
           return resp.body.id;
+        }
+        return resp;
+      })
+    );
+  }
+
+  DeleteQuestion(id: number) : Observable<boolean | string> {
+    
+    return this.http.delete<boolean | string>(`${this.baseUrl}/${id}`, {
+      responseType: 'json',
+      withCredentials: true,
+      observe: 'response'
+    }).pipe(
+      tap( {next: () => console.log(`Items created succesfully`)}),
+      catchError( (resp) => scheduled([resp.error], asyncScheduler)),
+      map( (resp) => {
+        if (resp.status == 200){
+          return true;
         }
         return resp;
       })

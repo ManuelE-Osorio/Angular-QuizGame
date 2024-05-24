@@ -1,12 +1,47 @@
 <button mat-flat-button color="primary" (click)="newQuestion()">Add</button>
 
-@if (questions != null) {
-    <mat-accordion multi="false">
-        @for (question of questions.data; track $index) {
-            <app-questiondetails [question]="question"></app-questiondetails>
-        }
-    </mat-accordion>
+
+@if(questions != null) {
+
+    <mat-table [dataSource]="data">
+        <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
+        <mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></mat-row>
+
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
+            <mat-cell *matCellDef="let question"> {{question.id}} </mat-cell>
+        </ng-container>
+        
+        <ng-container matColumnDef="questionText">
+            <mat-header-cell *matHeaderCellDef class="text-cell"> Question </mat-header-cell>
+            <mat-cell *matCellDef="let question" class="text-cell"> {{question.questionText}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="correctAnswer">
+            <mat-header-cell *matHeaderCellDef class="text-cell"> Correct Answer </mat-header-cell>
+            <mat-cell *matCellDef="let question" class="text-cell"> {{question.correctAnswer.answerText}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="createdAt">
+            <mat-header-cell *matHeaderCellDef class="text-cell"> Created At</mat-header-cell>
+            <mat-cell *matCellDef="let question" class="text-cell"> {{question.createdAt | date}} </mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="options">
+            <mat-header-cell *matHeaderCellDef>  </mat-header-cell>
+            <mat-cell *matCellDef="let question">  
+                <button mat-icon-button (click)="deleteQuestionDialog(question.id)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+                <button mat-icon-button [routerLink]="['/details', ]" >
+                    <mat-icon>info</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+    </mat-table>
     
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
     <mat-paginator [pageSizeOptions]="[5]"
         [hidePageSize]="true"
         showFirstLastButtons
@@ -17,4 +52,3 @@
 @else {
     <mat-spinner mode="indeterminate"></mat-spinner>
 }
-
