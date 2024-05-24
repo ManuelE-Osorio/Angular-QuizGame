@@ -92,7 +92,7 @@ export class QuestionsComponent implements OnInit{
   }
 
   deleteQuestion(id: number) {
-    this.questionsService.DeleteQuestion(id).subscribe( (resp) => {
+    this.questionsService.deleteQuestion(id).subscribe( (resp) => {
       if(typeof resp == 'boolean' && resp === true){
         if(this.questions != null){
           this.questions.totalRecords--
@@ -111,7 +111,7 @@ export class QuestionsComponent implements OnInit{
     this.dialog.open(ConfirmDeleteDialogComponent, {
       enterAnimationDuration: '400',
       exitAnimationDuration: '400',
-      data: 'selected question.'
+      data: 'selected question?'
     }).afterClosed().subscribe( (resp) => {
       console.log(resp)
       if( resp.data === true){

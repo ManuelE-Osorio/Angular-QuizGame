@@ -1,17 +1,13 @@
-<mat-tab-group mat-stretch-tabs="false" dynamicHeight>
-    <mat-tab label="Questions">   
-        <ng-template matTabContent>
-            <app-questions></app-questions>
-        </ng-template> 
-    </mat-tab>
-    <mat-tab label="Quizzes">
-        <ng-template matTabContent>
-            Quizzes
-        </ng-template> 
-    </mat-tab>
-    <mat-tab label="Games">
-        <ng-template matTabContent>
-            Games
-        </ng-template> 
-    </mat-tab>
-</mat-tab-group>
+<div class="container">
+    <div class="banner-item" style="background: lightgreen;" [class.mat-elevation-z8]="true" routerLink="questions">
+        <h2>Questions</h2>
+    </div>
+    <div class="banner-item" style="background: lightblue;" [class.mat-elevation-z8]="true" routerLink="quizzes">
+        <h2>Quizzes</h2>
+    </div>
+    <div class="banner-item" style="background: lightcoral;"[class.mat-elevation-z8]="true" routerLink="games">
+        <h2>Games</h2>
+    </div>
+</div>
+
+  

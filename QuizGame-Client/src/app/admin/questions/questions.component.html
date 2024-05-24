@@ -33,7 +33,7 @@
                 <button mat-icon-button (click)="deleteQuestionDialog(question.id)">
                     <mat-icon>delete</mat-icon>
                 </button>
-                <button mat-icon-button [routerLink]="['/details', ]" >
+                <button mat-icon-button routerLink='details/{{question.id}}' >
                     <mat-icon>info</mat-icon>
                 </button>
             </mat-cell>

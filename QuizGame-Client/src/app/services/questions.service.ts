@@ -46,7 +46,24 @@ export class QuestionsService {
     );
   }
 
-  UpdateQuestion(question: Question) : Observable<boolean | string> {
+  getQuestion(id: number) : Observable<Question | null> {
+    return this.http.get<Question>(`${this.baseUrl}/${id}`, {
+      responseType: 'json',
+      withCredentials: true,
+    }).pipe(
+      tap( {next: () => console.log(`Items fetched succesfully`)}),
+      catchError( () => scheduled([null], asyncScheduler)),
+      map( (resp) => {
+        if( resp != null) {
+          resp.createdAt = new Date(resp.createdAt);
+          return resp; 
+        }
+        return null;
+      }),
+    );
+  }
+
+  updateQuestion(question: Question) : Observable<boolean | string> {
     
     return this.http.put<boolean | string>(`${this.baseUrl}/${question.id}`, question, {
       responseType: 'json',
@@ -64,7 +81,7 @@ export class QuestionsService {
     );
   }
 
-  CreateQuestion(question: Question) : Observable<number | string> {
+  createQuestion(question: Question) : Observable<number | string> {
     
     return this.http.post<number | string>(`${this.baseUrl}`, question, {
       responseType: 'json',
@@ -82,7 +99,7 @@ export class QuestionsService {
     );
   }
 
-  DeleteQuestion(id: number) : Observable<boolean | string> {
+  deleteQuestion(id: number) : Observable<boolean | string> {
     
     return this.http.delete<boolean | string>(`${this.baseUrl}/${id}`, {
       responseType: 'json',

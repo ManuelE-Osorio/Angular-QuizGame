@@ -67,7 +67,7 @@ export class QuestionCreateDialogComponent {
   }
 
   createQuestion(question: Question){
-    this.questionsService.CreateQuestion(question).subscribe( (resp) => {
+    this.questionsService.createQuestion(question).subscribe( (resp) => {
       if(typeof resp == 'number'){
         this.createdSuccessful = true;
         question.id = resp

@@ -25,6 +25,15 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
         return TypedResults.Ok(questions);
     }
 
+    [HttpGet]
+    [Route("{id}")]
+    public async Task<IResult> GetAllQuestions(int id) 
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var questions = await _questionsService.GetById(id, user!);
+        return TypedResults.Ok(questions);
+    }
+
     [HttpPost]
     public async Task<IResult> InsertQuestion([FromBody] QuestionDto questionDto, bool owned = true)
     {
@@ -34,7 +43,7 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
         var user = await _userManager.GetUserAsync(User);
         var question = await _questionsService.AddQuestion(user!, owned, questionDto);
         if(question is not null)
-            return TypedResults.Created($"/{question.Id}", new QuestionDto(question));
+            return TypedResults.Created($"/{question.Id}", question);
         
         return TypedResults.StatusCode(500);
     }

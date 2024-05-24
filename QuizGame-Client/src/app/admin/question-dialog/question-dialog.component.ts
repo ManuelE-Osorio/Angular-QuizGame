@@ -88,7 +88,7 @@ export class QuestionDialogComponent{
   }
 
   updateQuestion(){
-    this.questionsService.UpdateQuestion(this.question).subscribe(resp => {
+    this.questionsService.updateQuestion(this.question).subscribe(resp => {
       console.log(resp)
       if(typeof resp == 'boolean'){
         this.updateSuccessful = resp; 

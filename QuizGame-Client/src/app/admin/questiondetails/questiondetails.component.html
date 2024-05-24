@@ -1,32 +1,81 @@
-<!-- @if (question != null) {
+@if(form != null) {
+  <form [formGroup]="form">
 
-  <mat-expansion-panel>
-    <mat-expansion-panel-header>
-      <mat-panel-title>{{question.id}}</mat-panel-title>
-      <mat-panel-description>{{question.questionText}}</mat-panel-description>
-    </mat-expansion-panel-header>
+    <mat-form-field appearance="outline">
+        <mat-label>Question:</mat-label>
+        <input type="text" matInput formControlName="questionText" >
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" >
+      <mat-label>Question Image:</mat-label>
+      <input type="url" matInput formControlName="questionImage">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Timeout:</mat-label>
+      <input type="number" matInput formControlName="secondsTimeout">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+        <mat-label>Relative Score:</mat-label>
+        <input type="number" matInput formControlName="relativeScore">
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Category:</mat-label>
+      <input type="text" matInput formControlName="category">
+    </mat-form-field>
+
+    <div [formGroup]="form.controls.correctAnswer">
+      <h3>Answer</h3>
+      <mat-form-field appearance="outline">
+        <mat-label>Text:</mat-label>
+        <input type="text" matInput formControlName="answerText">
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Image:</mat-label>
+        <input type="text" matInput formControlName="answerImage">
+      </mat-form-field>
+    </div>
+
+    <div>
+      <h3>Wrong Answers</h3>
+      <button mat-mini-fab color="warn" (click)="removeWrongAnswer()">
+        <mat-icon>remove</mat-icon>
+      </button>
+      <button mat-mini-fab color="primary" (click)="addWrongAnswer()">
+        <mat-icon>add</mat-icon>
+      </button>
+
+      @for (answer of form.controls.incorrectAnswers.controls; track $index) {
+        <div [formGroup]="answer">
+        <mat-form-field appearance="outline">
+          <mat-label>Text:</mat-label>
+          <input type="text" matInput formControlName="answerText">
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Image:</mat-label>
+          <input type="text" matInput formControlName="answerImage">
+        </mat-form-field>
+        </div> 
+      }
+    </div>
+
+    @if(!updateSuccessful) {
+      <mat-error >{{errorMessage}}</mat-error>
+    }
   
-    <ng-template matExpansionPanelContent>
-      <mat-list>
-        <mat-list-item>Correct Answer: </mat-list-item>
-        <mat-divider></mat-divider><mat-divider></mat-divider>
-        <mat-list-item>{{question.correctAnswer.answerText}}</mat-list-item>
-        <mat-divider></mat-divider><mat-divider></mat-divider>
-        <mat-list-item>Incorrect Answers:</mat-list-item>
-        <mat-divider></mat-divider>
+  </form>  
 
-        @for (answer of question.incorrectAnswers; track $index) {
-          <mat-divider></mat-divider>
-          <mat-list-item>{{answer.answerText}}</mat-list-item>
-        }
-      </mat-list>
-      <mat-action-row>
-        <button mat-flat-button color="primary" (click)="openDialog(question)">Edit</button>
-        <button mat-flat-button color="warn" (click)="deleteQuestion(question)">Delete</button>
-      </mat-action-row>
-    </ng-template>
-  </mat-expansion-panel>
-} -->
+
+  <button mat-flat-button color="warn">Close</button>
+  <button mat-flat-button color="warn" (click)="disableForm()" >Cancel</button>
+  <button mat-flat-button color="warn" (click)="enableForm()" >Edit</button>
+  <button mat-flat-button color="primary" [disabled]="!form.valid" (click)="submitForm()" >Update</button>
+}
 
 
   
+
+

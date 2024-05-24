@@ -23,7 +23,7 @@ export interface QuestionForm{
     secondsTimeout: FormControl<number|null>;
     relativeScore: FormControl<number|null>;
     category: FormControl<string|null>;
-    createdAt: FormControl<string|null>;
+    createdAt?: FormControl<string|null>;
     correctAnswer: FormGroup<AnswerForm>;
     incorrectAnswers: FormArray<FormGroup<AnswerForm>>;
 }

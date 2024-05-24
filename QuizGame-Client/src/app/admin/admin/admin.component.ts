@@ -1,17 +1,15 @@
 import { Component } from '@angular/core';
-import {MatTabsModule} from '@angular/material/tabs';
 import { QuestionsComponent } from '../questions/questions.component';
-import { CommonModule, NgFor } from '@angular/common';
-import { QuestionDetailsComponent } from '../questiondetails/questiondetails.component';
+import {MatGridListModule} from '@angular/material/grid-list';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
   imports: [
-    NgFor,
-    MatTabsModule,
+    RouterLink,
     QuestionsComponent,
-    QuestionDetailsComponent
+    MatGridListModule
   ],
   templateUrl: './admin.component.html',
   styleUrl: './admin.component.css'

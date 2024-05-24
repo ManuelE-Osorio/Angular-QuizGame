@@ -14,7 +14,7 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
 {
     private readonly IQuizGameRepository<Question> _questionsRepository = questionsRepository;
 
-    public async Task<PageData<QuestionDto>> GetAll(QuizGameUser user, string? category, string? date, int? startIndex, int? pageSize)
+    public async Task<PageData<QuestionListDto>> GetAll(QuizGameUser user, string? category, string? date, int? startIndex, int? pageSize)
     {
         var isValidDate = DateTime.TryParse( date, out DateTime dateResult);
 
@@ -31,16 +31,25 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
         
         var totalQuestions = await _questionsRepository.Count(expression);
 
-        return new PageData<QuestionDto>
+        return new PageData<QuestionListDto>
         (
-            questions.Select(p => new QuestionDto(p)),
+            questions.Select(p => new QuestionListDto(p)),
             totalQuestions,
             startIndex,
             pageSize
         );
     }
 
-    public async Task<Question?> AddQuestion(QuizGameUser user, bool owned, QuestionDto questionDto)
+    public async Task<QuestionDto> GetById(int id, QuizGameUser user)
+    {
+        var question = await _questionsRepository.ReadById(id) ?? throw new Exception("Quiz not found");
+        if (question.Owner != null && question.Owner.Id != user.Id)
+            throw new Exception("Question is not owned by the user making the request");
+
+        return new QuestionDto(question);
+    }
+
+    public async Task<QuestionDto?> AddQuestion(QuizGameUser user, bool owned, QuestionDto questionDto)
     {
         var question = new Question(questionDto);
         if(owned)
@@ -49,7 +58,7 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
         var operationSuccesfull = await _questionsRepository.Create(question);
 
         if(operationSuccesfull)
-            return question;
+            return new QuestionDto(question);
         
         return null;
     }
