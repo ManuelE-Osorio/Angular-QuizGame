@@ -1,15 +1,19 @@
-<button mat-flat-button color="primary" (click)="newQuestion()">Add</button>
+<div class="margin">
+    <div class="container">
 
+        <button mat-flat-button color="primary" routerLink='details/0'>Add</button>
+
+    </div>
 
 @if(questions != null) {
 
-    <mat-table [dataSource]="data">
-        <mat-header-row *matHeaderRowDef="columnsToDisplay"></mat-header-row>
-        <mat-row *matRowDef="let myRowData; columns: columnsToDisplay"></mat-row>
+    <mat-table [dataSource]="data" class="container-table">
+        <mat-header-row *matHeaderRowDef="columnsToDisplay" class="table-row"></mat-header-row>
+        <mat-row *matRowDef="let myRowData; columns: columnsToDisplay" class="table-row"></mat-row>
 
         <ng-container matColumnDef="id">
-            <mat-header-cell *matHeaderCellDef> Id </mat-header-cell>
-            <mat-cell *matCellDef="let question"> {{question.id}} </mat-cell>
+            <mat-header-cell *matHeaderCellDef class="id-cell"> Id </mat-header-cell>
+            <mat-cell *matCellDef="let question" class="id-cell"> {{question.id}} </mat-cell>
         </ng-container>
         
         <ng-container matColumnDef="questionText">
@@ -28,8 +32,8 @@
         </ng-container>
 
         <ng-container matColumnDef="options">
-            <mat-header-cell *matHeaderCellDef>  </mat-header-cell>
-            <mat-cell *matCellDef="let question">  
+            <mat-header-cell *matHeaderCellDef class="button-cell">  </mat-header-cell>
+            <mat-cell *matCellDef="let question" class="button-cell">  
                 <button mat-icon-button (click)="deleteQuestionDialog(question.id)">
                     <mat-icon>delete</mat-icon>
                 </button>
@@ -48,7 +52,10 @@
         (page)="onChangePage($event)"
         [length]="questions.totalRecords">
     </mat-paginator>
+
 }
 @else {
     <mat-spinner mode="indeterminate"></mat-spinner>
 }
+
+</div>

@@ -1,29 +1,28 @@
-import { HttpClient, HttpErrorResponse, HttpParams, HttpResponse } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Question } from '../models/question';
+import { Observable, tap, catchError, scheduled, asyncScheduler, map } from 'rxjs';
 import { PageData } from '../models/pagedata';
-import { formatDate } from '@angular/common';
-import { Observable, tap, catchError, map, scheduled, asyncScheduler } from 'rxjs';
+import { Question } from '../models/question';
+import { Quiz } from '../models/quiz';
 
 @Injectable({
   providedIn: 'root'
 })
-export class QuestionsService {
+export class QuizService {
 
-  private baseUrl = "/api/questions";
+  private baseUrl = "/api/quiz";
   constructor(
     private http: HttpClient,
   ) { }
 
-  getAllQuestions(category?: string, date?: string, startIndex?: number) : Observable<PageData<Question> | null> {
+  getAllQuizzes(name?: string, startIndex?: number) : Observable<PageData<Quiz> | null> {
     
     let options = new HttpParams();
     
-    options = category? options.set('category', category) : options;
-    options = date? options.set('date', date) : options;
+    options = name? options.set('name', name) : options;
     options = startIndex? options.set('startIndex', startIndex) : options;
-
-    return this.http.get<PageData<Question>>(`${this.baseUrl}`, {
+  
+    return this.http.get<PageData<Quiz>>(`${this.baseUrl}`, {
       responseType: 'json',
       withCredentials: true,
       params: options
@@ -32,22 +31,15 @@ export class QuestionsService {
       catchError( () => scheduled([null], asyncScheduler)),
       map( (resp) => {
         if( resp != null) {
-          return {
-          data : resp.data.map( question => {
-            question.createdAt = new Date(question.createdAt);
-            return question; }),
-          currentPage : resp.currentPage,
-          pageSize: resp.pageSize,
-          totalPages: resp.totalPages,
-          totalRecords: resp.totalRecords}
+          return resp
         }
         return null;  
       }),
     );
   }
 
-  getQuestion(id: number) : Observable<Question | null> {
-    return this.http.get<Question>(`${this.baseUrl}/${id}`, {
+  getQuiz(id: number) : Observable<Quiz | null> {
+    return this.http.get<Quiz>(`${this.baseUrl}/${id}`, {
       responseType: 'json',
       withCredentials: true,
     }).pipe(
@@ -55,7 +47,6 @@ export class QuestionsService {
       catchError( () => scheduled([null], asyncScheduler)),
       map( (resp) => {
         if( resp != null) {
-          resp.createdAt = new Date(resp.createdAt);
           return resp; 
         }
         return null;
@@ -63,8 +54,8 @@ export class QuestionsService {
     );
   }
 
-  createQuestion(question: Question) : Observable<number | string> {
-    return this.http.post<number | string>(`${this.baseUrl}`, question, {
+  createQuiz(quiz: Quiz) : Observable<number | string> {
+    return this.http.post<number | string>(`${this.baseUrl}`, quiz, {
       responseType: 'json',
       withCredentials: true,
       observe: 'response'
@@ -80,8 +71,8 @@ export class QuestionsService {
     );
   }
 
-  updateQuestion(question: Question) : Observable<boolean | string> {
-    return this.http.put<boolean | string>(`${this.baseUrl}/${question.id}`, question, {
+  updateQuiz(quiz: Quiz) : Observable<boolean | string> {
+    return this.http.put<boolean | string>(`${this.baseUrl}/${quiz.id}`, quiz, {
       responseType: 'json',
       withCredentials: true,
       observe: 'response'
@@ -97,7 +88,7 @@ export class QuestionsService {
     );
   }
 
-  deleteQuestion(id: number) : Observable<boolean | string> {
+  deleteQuiz(id: number) : Observable<boolean | string> {
     return this.http.delete<boolean | string>(`${this.baseUrl}/${id}`, {
       responseType: 'json',
       withCredentials: true,

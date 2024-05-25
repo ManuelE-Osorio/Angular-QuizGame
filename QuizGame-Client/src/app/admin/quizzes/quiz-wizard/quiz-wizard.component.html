@@ -1,0 +1,54 @@
+<div class="margin">
+    <mat-stepper [orientation]="(stepperOrientation | async)!" linear>
+        <mat-step [stepControl]="quizForm" label="Fill Quiz details">
+
+            <ng-template matStepContent>
+                <form [formGroup]="quizForm">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Name</mat-label>
+                        <input matInput formControlName="name" type="text">
+                    </mat-form-field>
+    
+                    <mat-form-field appearance="fill">
+                        <mat-label>Description:</mat-label>
+                        <textarea matInput formControlName="description"> </textarea>
+                    </mat-form-field>
+    
+                    <div>
+                        <button mat-flat-button matStepperNext [disabled]="!quizForm.valid" color="primary">Next</button>
+                    </div>
+                </form>
+            </ng-template>
+        </mat-step>
+
+        <mat-step [stepControl]="secondFormGroup" label="Add Questions">
+            <ng-template matStepContent>
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button matStepperNext>Next</button>
+                </div>
+            </ng-template>
+        </mat-step>
+
+        <mat-step [stepControl]="thirdFormGroup" label="Fill out your phone number">
+            <form [formGroup]="thirdFormGroup">
+            <mat-form-field>
+                <mat-label>Phone number</mat-label>
+                <input matInput formControlName="thirdCtrl" placeholder="Ex. 12345678" required>
+            </mat-form-field>
+            <div>
+                <button mat-button matStepperPrevious>Back</button>
+                <button mat-button matStepperNext>Next</button>
+            </div>
+            </form>
+        </mat-step>
+   
+        <mat-step>
+            <ng-template matStepLabel>Done</ng-template>
+            <p>You are now done.</p>
+            <div>
+            <button mat-button matStepperPrevious>Back</button>
+            </div>
+        </mat-step>
+    </mat-stepper>
+</div>

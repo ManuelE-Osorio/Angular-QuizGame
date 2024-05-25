@@ -1,66 +1,85 @@
+<div class="margin">
+
 @if(form != null) {
+  <div class="field-container">
+    <h2>Question Details</h2>
+  </div>
   <form [formGroup]="form">
+    
+    <div class="field-container">
+      <mat-form-field appearance="fill" class="big-field">
+          <mat-label>Question:</mat-label>
+          <textarea matInput formControlName="questionText"> </textarea>
+      </mat-form-field>
+    
+    </div>
 
-    <mat-form-field appearance="outline">
-        <mat-label>Question:</mat-label>
-        <input type="text" matInput formControlName="questionText" >
-    </mat-form-field>
+    <div class="field-container">
+      <mat-form-field appearance="fill" class="field">
+        <mat-label>Question Image:</mat-label>
+        <input type="url" matInput formControlName="questionImage">
+      </mat-form-field>
 
-    <mat-form-field appearance="outline" >
-      <mat-label>Question Image:</mat-label>
-      <input type="url" matInput formControlName="questionImage">
-    </mat-form-field>
+      <mat-form-field appearance="fill" class="field">
+        <mat-label>Timeout:</mat-label>
+        <input type="number" matInput formControlName="secondsTimeout">
+      </mat-form-field>
+    </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Timeout:</mat-label>
-      <input type="number" matInput formControlName="secondsTimeout">
-    </mat-form-field>
+    <div class="field-container">
+      <mat-form-field appearance="fill" class="field">
+          <mat-label>Relative Score:</mat-label>
+          <input type="number" matInput formControlName="relativeScore">
+      </mat-form-field>
 
-    <mat-form-field appearance="outline">
-        <mat-label>Relative Score:</mat-label>
-        <input type="number" matInput formControlName="relativeScore">
-    </mat-form-field>
+      <mat-form-field appearance="fill" class="field">
+        <mat-label>Category:</mat-label>
+        <input type="text" matInput formControlName="category">
+      </mat-form-field>
+    </div>
 
-    <mat-form-field appearance="outline">
-      <mat-label>Category:</mat-label>
-      <input type="text" matInput formControlName="category">
-    </mat-form-field>
-
-    <div [formGroup]="form.controls.correctAnswer">
+    <div class="field-container">
       <h3>Answer</h3>
-      <mat-form-field appearance="outline">
+    </div>
+
+    <div [formGroup]="form.controls.correctAnswer" class="field-container">
+
+      <mat-form-field appearance="fill" class="field">
         <mat-label>Text:</mat-label>
         <input type="text" matInput formControlName="answerText">
       </mat-form-field>
 
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="fill" class="field">
         <mat-label>Image:</mat-label>
         <input type="text" matInput formControlName="answerImage">
       </mat-form-field>
     </div>
 
-    <div>
+    <div class="field-container">
       <h3>Wrong Answers</h3>
-      <button mat-mini-fab color="warn" (click)="removeWrongAnswer()">
+      <span class="spacer"></span>
+      <button mat-mini-fab color="warn" (click)="removeWrongAnswer()" class="field-button">
         <mat-icon>remove</mat-icon>
       </button>
-      <button mat-mini-fab color="primary" (click)="addWrongAnswer()">
+      <button mat-mini-fab color="primary" (click)="addWrongAnswer()" class="field-button">
         <mat-icon>add</mat-icon>
       </button>
+    </div>
 
       @for (answer of form.controls.incorrectAnswers.controls; track $index) {
-        <div [formGroup]="answer">
-        <mat-form-field appearance="outline">
+        <div [formGroup]="answer" class="field-container">
+          <h4>{{$index + 1}})</h4>
+        <mat-form-field appearance="fill" class="field">
           <mat-label>Text:</mat-label>
           <input type="text" matInput formControlName="answerText">
         </mat-form-field>
-        <mat-form-field appearance="outline">
+        <mat-form-field appearance="fill" class="field">
           <mat-label>Image:</mat-label>
           <input type="text" matInput formControlName="answerImage">
         </mat-form-field>
         </div> 
       }
-    </div>
+    
 
     @if(!updateSuccessful) {
       <mat-error >{{errorMessage}}</mat-error>
@@ -68,12 +87,24 @@
   
   </form>  
 
-
-  <button mat-flat-button color="warn">Close</button>
-  <button mat-flat-button color="warn" (click)="disableForm()" >Cancel</button>
-  <button mat-flat-button color="warn" (click)="enableForm()" >Edit</button>
-  <button mat-flat-button color="primary" [disabled]="!form.valid" (click)="submitForm()" >Update</button>
+  <div class="field-container">
+    <button mat-flat-button color="accent" class="field-button" (click)="return()">Return</button>
+    @if(this.id == 0){
+      <button mat-flat-button color="primary" [disabled]="!form.valid" (click)="submitForm()" class="field-button">Create</button>  
+    }
+    @else {
+      <button mat-flat-button color="primary" [disabled]="!form.valid" (click)="submitForm()" class="field-button">Save Changes</button>  
+    }
+    <span class="spacer"></span>
+  <button mat-flat-button color="warn" (click)="deleteQuestionDialog()" class="field-button">Delete</button>
+  </div>
 }
+@else {
+  <mat-spinner mode="indeterminate"></mat-spinner>
+}
+
+
+</div>
 
 
   

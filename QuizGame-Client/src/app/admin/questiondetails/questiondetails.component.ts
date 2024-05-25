@@ -1,15 +1,20 @@
+import { Location } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { Question, QuestionForm } from '../../models/question';
 import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { QuestionsService } from '../../services/questions.service';
-import { ActivatedRoute } from '@angular/router';
-import { FormArray, FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { NgFor, formatDate } from '@angular/common';
 import { AnswerForm } from '../../models/answer';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatSnackBar } from '@angular/material/snack-bar';
+import { ConfirmDeleteDialogComponent } from '../confirm-delete-dialog/confirm-delete-dialog.component';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+
 
 @Component({
   selector: 'app-questiondetails',
@@ -21,7 +26,9 @@ import { MatInputModule } from '@angular/material/input';
     ReactiveFormsModule,
     MatFormFieldModule,
     MatInputModule,
-    MatIconModule
+    MatIconModule, 
+    FormsModule,
+    MatProgressSpinnerModule
   ],
   templateUrl: './questiondetails.component.html',
   styleUrl: './questiondetails.component.css'
@@ -38,6 +45,10 @@ export class QuestionDetailsComponent implements OnInit{
     public logDialog: MatDialog,
     private questionsService: QuestionsService,
     private route: ActivatedRoute,
+    private location: Location,
+    private snackBar: MatSnackBar,
+    public dialog: MatDialog,
+    private router: Router
   ) {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
   }
@@ -48,11 +59,13 @@ export class QuestionDetailsComponent implements OnInit{
         if(resp != null) {
           this.question = resp;
           this.form = this.createForm(this.question);
+          this.form.enable();
         }   
       })
     }
     else {
       this.form = this.createEmptyForm();
+      this.form.enable();
     }
   }
 
@@ -111,29 +124,84 @@ export class QuestionDetailsComponent implements OnInit{
         answerImage: new FormControl<string|null>(''),
       })
     );
+
   }
 
   removeWrongAnswer() {
     this.form?.controls.incorrectAnswers.removeAt(-1)
   }
 
+  createQuestion(question: Question){
+    this.questionsService.createQuestion(question).subscribe( (resp) => {
+      if(typeof resp == 'number') {
+        this.snackBar.open('Question created succesfully', 'close', {duration: 2000});
+        this.id = resp;
+        question.id = resp
+        this.question = question
+        this.form = this.createForm(question);
+        this.form.enable();
+        this.router.navigate([`admin/questions/details/${resp}`]);
+      }
+      else if( typeof resp == 'string'){
+        this.snackBar.open(resp, 'close', {duration: 2000})
+      }
+    })
+  }
+
+  updateQuestion(question: Question){
+    this.questionsService.updateQuestion(question).subscribe( (resp) => {
+      if(typeof resp == 'boolean') {
+        this.snackBar.open('Question updated succesfully', 'close', {duration: 2000});
+      }
+      else if( typeof resp == 'string'){
+        this.snackBar.open(resp, 'close', {duration: 2000})
+      }
+    })
+  }
+
+
   submitForm() {
+    let question: Question;
     if(this.form?.valid){
-      this.question = Object.assign(this.form.value);
-      // this.question.createdAt = new Date(Date.now())
-      
+      question = Object.assign(this.form.value);
+      question.createdAt = new Date(Date.now())
+      if(this.id == 0) {
+        this.createQuestion(question);
+      }
+      else{
+        this.updateQuestion(question)
+      }
     }
   }
 
-  enableForm() {
-    this.form?.enable();
+  deleteQuestionDialog(){
+    if(this.question != null){
+      this.dialog.open(ConfirmDeleteDialogComponent, {
+        enterAnimationDuration: '400',
+        exitAnimationDuration: '400',
+        data: 'selected question?'
+      }).afterClosed().subscribe( (resp) => {
+        console.log(resp)
+        if( resp.data === true){
+          this.deleteQuestion(this.question!.id)
+        }
+      });
+    }
   }
 
-  disableForm() {
-    this.form?.disable();
+  deleteQuestion(id: number) {
+    this.questionsService.deleteQuestion(id).subscribe( (resp) => {
+      if(typeof resp == 'boolean' && resp === true){
+        this.snackBar.open('Question deleted succesfully', 'close', {duration: 2000})
+        this.router.navigate([`admin/questions`]);
+      }
+      else if( typeof resp == 'string'){
+        this.snackBar.open(resp, 'close', {duration: 2000})
+      }
+    });
   }
 
-  deleteQuestion(question: Question){
-    this.questionsService.deleteQuestion(question.id).subscribe()
+  return() {
+    this.router.navigate([`admin/questions`]);
   }
 }

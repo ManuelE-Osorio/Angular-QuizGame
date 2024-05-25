@@ -1,0 +1,30 @@
+.field-container{
+    margin: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: center;
+}
+
+.spacer {
+    flex: 1 1 auto;
+  }
+
+.field-button{
+    margin: 5px;
+}
+
+.field{
+    margin: 5px;
+    justify-self: stretch;
+    flex: 45%
+}
+
+.big-field{
+    margin: 5px;
+    flex: 1 1 100%
+}
+
+.margin{
+    margin: 30px;
+}

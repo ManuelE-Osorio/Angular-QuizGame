@@ -1,0 +1,56 @@
+<div class="margin">
+    <div class="container">
+
+        <button mat-flat-button color="primary" routerLink='creation/0'>Quiz Creation</button>
+
+    </div>
+
+@if(quizzes != null) {
+
+    <mat-table [dataSource]="data" class="container-table">
+        <mat-header-row *matHeaderRowDef="columnsToDisplay" class="table-row"></mat-header-row>
+        <mat-row *matRowDef="let myRowData; columns: columnsToDisplay" class="table-row"></mat-row>
+
+        <ng-container matColumnDef="id">
+            <mat-header-cell *matHeaderCellDef class="id-cell">Id</mat-header-cell>
+            <mat-cell *matCellDef="let quiz" class="id-cell">{{quiz.id}}</mat-cell>
+        </ng-container>
+        
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef class="text-cell">Name</mat-header-cell>
+            <mat-cell *matCellDef="let quiz" class="text-cell">{{quiz.name}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+            <mat-header-cell *matHeaderCellDef class="text-cell">Description</mat-header-cell>
+            <mat-cell *matCellDef="let quiz" class="text-cell">{{quiz.description}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="options">
+            <mat-header-cell *matHeaderCellDef class="button-cell">  </mat-header-cell>
+            <mat-cell *matCellDef="let quiz" class="button-cell">  
+                <button mat-icon-button (click)="deleteQuizDialog(quiz.id)">
+                    <mat-icon>delete</mat-icon>
+                </button>
+                <button mat-icon-button routerLink='creation/{{quiz.id}}' >
+                    <mat-icon>info</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+    </mat-table>
+    
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+    <mat-paginator [pageSizeOptions]="[5]"
+        [hidePageSize]="true"
+        showFirstLastButtons
+        (page)="onChangePage($event)"
+        [length]="quizzes.totalRecords">
+    </mat-paginator>
+
+}
+@else {
+    <mat-spinner mode="indeterminate"></mat-spinner>
+}
+
+</div>
