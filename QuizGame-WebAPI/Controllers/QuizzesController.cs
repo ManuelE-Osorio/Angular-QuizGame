@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualBasic;
 using QuizGame.Data;
 using QuizGame.Models;
 using QuizGame.Repositories;
@@ -43,24 +44,15 @@ public class QuizzesController(QuizzesService quizService, UserManager<QuizGameU
     }
 
     [HttpPost]
-    public async Task<IResult> InsertQuiz([FromBody] QuizDto quiz, bool owned = true)
+    public async Task<IResult> InsertQuiz([FromBody] QuizDto quizDto, bool owned = true)
     {
         if(!ModelState.IsValid)
             return TypedResults.BadRequest();
 
         var user = await _userManager.GetUserAsync(User);
+        var quiz = await _quizService.AddQuiz(user!, owned, quizDto);
 
-        bool operationSuccesfull;
-        try
-        {
-            operationSuccesfull = await _quizService.AddQuiz(user!, owned, quiz);
-        }
-        catch(Exception ex)
-        {
-            return TypedResults.BadRequest(ex.Message);
-        }
-
-        if(operationSuccesfull)
+        if(quiz != null)
             return TypedResults.Created($"/{quiz.Id}", quiz);
         
         return TypedResults.StatusCode(500);

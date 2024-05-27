@@ -21,8 +21,18 @@
             </ng-template>
         </mat-step>
 
-        <mat-step [stepControl]="secondFormGroup" label="Add Questions">
+        <mat-step label="Add Questions">
             <ng-template matStepContent>
+                <div>
+                    <app-question-list #questionList></app-question-list>
+
+                    <mat-list>
+                        @for (question of questionList.totalSelectedQuestions; track $index) {
+                            <mat-list-item>{{question.questionText}}</mat-list-item>
+                        }
+                    </mat-list>
+                </div>
+
                 <div>
                     <button mat-button matStepperPrevious>Back</button>
                     <button mat-button matStepperNext>Next</button>
@@ -30,25 +40,30 @@
             </ng-template>
         </mat-step>
 
-        <mat-step [stepControl]="thirdFormGroup" label="Fill out your phone number">
-            <form [formGroup]="thirdFormGroup">
-            <mat-form-field>
-                <mat-label>Phone number</mat-label>
-                <input matInput formControlName="thirdCtrl" placeholder="Ex. 12345678" required>
-            </mat-form-field>
-            <div>
-                <button mat-button matStepperPrevious>Back</button>
-                <button mat-button matStepperNext>Next</button>
-            </div>
-            </form>
-        </mat-step>
-   
-        <mat-step>
-            <ng-template matStepLabel>Done</ng-template>
-            <p>You are now done.</p>
-            <div>
-            <button mat-button matStepperPrevious>Back</button>
-            </div>
+        <mat-step label="Review">
+            <ng-template matStepContent>
+                
+                <div>
+                    <mat-list>
+                        <mat-list-item>Name: {{this.quizForm.value.name}}</mat-list-item>
+                        <mat-list-item>Description: {{this.quizForm.value.description}}</mat-list-item>
+                    </mat-list>
+
+                </div>
+                
+                <div>
+                    <mat-list>
+                        @for (question of questionList.totalSelectedQuestions; track $index) {
+                            <mat-list-item>{{question.questionText}}</mat-list-item>
+                        }
+                    </mat-list>
+                </div>
+
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button (click)="submitQuiz()">Save</button>
+                </div>
+            </ng-template>
         </mat-step>
     </mat-stepper>
 </div>

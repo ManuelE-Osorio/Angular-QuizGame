@@ -94,6 +94,23 @@ export class QuizService {
       withCredentials: true,
       observe: 'response'
     }).pipe(
+      tap( {next: () => console.log(`Item deleted succesfully`)}),
+      catchError( (resp) => scheduled([resp.error], asyncScheduler)),
+      map( (resp) => {
+        if (resp.status == 200){
+          return true;
+        }
+        return resp;
+      })
+    );
+  }
+
+  insertQuestions(id: number, questionIdList: number[]) : Observable<boolean | string> {
+    return this.http.put<boolean | string>(`${this.baseUrl}/${id}/questions`, questionIdList, {
+      responseType: 'json',
+      withCredentials: true,
+      observe: 'response'
+    }).pipe(
       tap( {next: () => console.log(`Items created succesfully`)}),
       catchError( (resp) => scheduled([resp.error], asyncScheduler)),
       map( (resp) => {

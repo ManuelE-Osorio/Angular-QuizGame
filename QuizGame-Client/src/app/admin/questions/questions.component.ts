@@ -54,10 +54,10 @@ export class QuestionsComponent implements OnInit{
   }
 
   ngOnInit(): void {
-    this.getLogs(0);
+    this.getQuestions(0);
   }
 
-  getLogs(startIndex: number){
+  getQuestions(startIndex: number){
     this.questionsService.getAllQuestions(undefined, undefined, startIndex).subscribe( resp => {
       if( resp != null) {
         this.data.data = resp.data
@@ -69,7 +69,7 @@ export class QuestionsComponent implements OnInit{
 
   onChangePage(event: PageEvent) {
     this.isLoading = true;
-    this.getLogs(event.pageIndex*event.pageSize); 
+    this.getQuestions(event.pageIndex*event.pageSize); 
   }
 
   addQuestion(question: Question){

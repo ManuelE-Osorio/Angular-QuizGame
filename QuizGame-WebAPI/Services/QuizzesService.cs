@@ -43,27 +43,16 @@ public class QuizzesService(IQuizGameRepository<Quiz> quizzesRepository, IQuizGa
         return new QuizDto(quiz);
     }
 
-    public async Task<bool> AddQuiz(QuizGameUser user, bool owned, QuizDto quizDto)
+    public async Task<QuizDto?> AddQuiz(QuizGameUser user, bool owned, QuizDto quizDto)
     {
         var quiz = new Quiz(quizDto);
         if(owned)
             quiz.Owner = user;
-
-        if(quizDto.Questions is not null)
-        {
-            quiz.Questions = [];
-            foreach(int id in quizDto.Questions.Select(p => p.Id))
-            {
-                var question = await _questionsRepository.ReadById(id) ?? 
-                    throw new Exception("Question does not exists");
-                quiz.Questions.Add(question);
-            }
-        }
         
         if(await _quizzesRepository.Create(quiz))
-            return true;
+            return new QuizDto(quiz);
         
-        return false;
+        return null;
     }
 
     public async Task<bool> AddQuestionsToQuiz(QuizGameUser user, int id, List<int> questionsId )
