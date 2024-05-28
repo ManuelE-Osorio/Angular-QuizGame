@@ -92,7 +92,6 @@ export class GamesComponent {
       exitAnimationDuration: '400',
       data: 'selected game?'
     }).afterClosed().subscribe( (resp) => {
-      console.log(resp)
       if( resp.data === true){
         this.deleteGame(id)
       }

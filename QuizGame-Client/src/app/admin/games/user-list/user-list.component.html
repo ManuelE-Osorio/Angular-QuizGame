@@ -1,0 +1,20 @@
+@if(users != null){
+    <mat-selection-list (selectionChange)="modifySelection($event)">
+        @for (user of users.data; track user) {
+          <mat-list-option [value]="user" [selected]="isSelected(user.id)">{{user.alias}}</mat-list-option>
+        }
+    </mat-selection-list>
+}
+
+@if(isLoading){
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}
+
+@if(users != null){
+    <mat-paginator [pageSizeOptions]="[5]"
+        [hidePageSize]="true"
+        showFirstLastButtons
+        (page)="onChangePage($event)"
+        [length]="users.totalRecords">
+    </mat-paginator>    
+}
