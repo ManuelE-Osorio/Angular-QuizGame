@@ -1,18 +1,18 @@
 import { FormControl } from "@angular/forms";
-import { Question } from "./question";
 import { User } from "./user";
 
-export interface Quiz{
+export interface Game{
     id: number;
     name: string;
-    description: string;
-    questions: Question[];
-    gamesId: number[];
-    gamesName: number[];
+    passingScore: number;
+    dueDate: Date;
+    quizId: number;
+    quizName: string;
+    assignedUsers: User[];
     owner: User;
 }
 
-export interface QuizForm{
+export interface GameForm{
     id?: FormControl<number|null>;
     name: FormControl<string|null>;
     description: FormControl<string|null>;

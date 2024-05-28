@@ -6,6 +6,7 @@ import { QuestionDetailsComponent } from './admin/questiondetails/questiondetail
 import { QuestionsComponent } from './admin/questions/questions.component';
 import { QuizzesComponent } from './admin/quizzes/quizzes/quizzes.component';
 import { QuizWizardComponent } from './admin/quizzes/quiz-wizard/quiz-wizard.component';
+import { GamesComponent } from './admin/games/games/games.component';
 
 export const routes: Routes = [
     {
@@ -27,6 +28,10 @@ export const routes: Routes = [
     {
         path: 'admin/quizzes/creation/:id',
         component: QuizWizardComponent,
+    },
+    {
+        path: 'admin/games',
+        component: GamesComponent,
     },
     {
         path: 'user',

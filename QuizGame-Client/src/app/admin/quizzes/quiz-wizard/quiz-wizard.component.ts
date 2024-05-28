@@ -1,6 +1,7 @@
+import { Location } from '@angular/common';
 import { AsyncPipe } from '@angular/common';
-import { Component, ViewChild } from '@angular/core';
-import {StepperOrientation, MatStepperModule} from '@angular/material/stepper';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { StepperOrientation, MatStepperModule} from '@angular/material/stepper';
 import { FormBuilder, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -10,10 +11,11 @@ import { Observable, map } from 'rxjs';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { Quiz, QuizForm } from '../../../models/quiz';
 import { QuestionListComponent } from '../question-list/question-list.component';
-import {MatListModule} from '@angular/material/list';
+import { MatListModule } from '@angular/material/list';
 import { QuizService } from '../../../services/quiz.service';
 import { Question } from '../../../models/question';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 @Component({
   selector: 'app-quiz-wizard',
@@ -27,14 +29,16 @@ import { MatSnackBar } from '@angular/material/snack-bar';
     MatButtonModule,
     MatListModule,
     AsyncPipe,
-    QuestionListComponent
+    QuestionListComponent,
+    MatProgressSpinnerModule
   ],
   templateUrl: './quiz-wizard.component.html',
   styleUrl: './quiz-wizard.component.css'
 })
-export class QuizWizardComponent {
+export class QuizWizardComponent implements OnInit{
 
-  quizForm : FormGroup<QuizForm>;
+  quizForm : FormGroup<QuizForm> | null = null;
+  currentList: Question[] = [];
 
   @ViewChild(QuestionListComponent) public questionList!: QuestionListComponent;
   
@@ -46,13 +50,35 @@ export class QuizWizardComponent {
     private quizService: QuizService,
     private snackBar: MatSnackBar,
     private router: Router,
+    private location: Location,
     breakpointObserver: BreakpointObserver,
   ) {
     this.id = Number(this.route.snapshot.paramMap.get('id'));
     this.stepperOrientation = breakpointObserver
     .observe('(min-width: 800px)')
     .pipe(map(({matches}) => (matches ? 'horizontal' : 'vertical')));
-    this.quizForm = this.createEmptyForm();
+  }
+
+  ngOnInit() {
+    if(this.id == 0){
+      this.quizForm = this.createEmptyForm();
+    }
+    else{
+      this.quizService.getQuiz(this.id).subscribe( (resp) => {
+        if(resp != null){
+          this.quizForm = this.createForm(resp);
+          this.currentList = resp.questions;
+        }
+      });
+    }
+  }
+
+  createForm(quiz: Quiz) : FormGroup<QuizForm> {
+    return new FormGroup<QuizForm>({
+      id: new FormControl<number | null> (quiz.id),
+      name: new FormControl<string | null> (quiz.name),
+      description: new FormControl<string | null> (quiz.description),
+    });
   }
 
   createEmptyForm() : FormGroup<QuizForm> {
@@ -60,43 +86,51 @@ export class QuizWizardComponent {
       id: new FormControl<number | null> (0),
       name: new FormControl<string | null> (''),
       description: new FormControl<string | null> (''),
-    })
+    });
   }
 
-  createQuiz(quiz: Quiz){
+  createQuiz(quiz: Quiz) {
     this.quizService.createQuiz(quiz).subscribe( (resp) => {
       if( typeof resp == 'number') {
+        this.snackBar.open('Quiz created succesfully', 'close', {duration: 2000})
         this.insertQuestions(resp);
       }
-    })
+    });
   }
 
-  updateQuiz(quiz: Quiz){
-
+  updateQuiz(quiz: Quiz) {
+    this.quizService.updateQuiz(quiz).subscribe( (resp) => {
+      if( typeof resp == 'boolean') {
+        this.snackBar.open('Quiz updated succesfully', 'close', {duration: 2000})
+        this.insertQuestions(quiz.id);
+      }
+    });
   }
 
-  insertQuestions(id: number){
+  insertQuestions(id: number) {
     const questionIdList = this.questionList.totalSelectedQuestions.map( (question) => question.id)
     this.quizService.insertQuestions(id, questionIdList).subscribe( (resp) => {
       if(typeof resp == 'boolean') {
-        this.snackBar.open('Quiz created succesfully', 'close', {duration: 2000})
+        this.snackBar.open('Questions updated succesfully', 'close', {duration: 2000})
         this.router.navigate([`admin/quizzes`]);
       }
-    })
+    });
+  }
 
+  return() {
+    this.location.back();
   }
 
   submitQuiz() {
     let quiz: Quiz;
     if(this.quizForm?.valid){
       quiz = Object.assign(this.quizForm.value);
-      console.log(quiz)
-      // if(this.id == 0) {
-      //   this.createQuiz(quiz);
-      // }
-      // else{
-      //   this.updateQuiz(quiz)
-      // }
+      if(this.id == 0) {
+        this.createQuiz(quiz);
+      }
+      else{
+        this.updateQuiz(quiz)
+      }
     }
   }
 }

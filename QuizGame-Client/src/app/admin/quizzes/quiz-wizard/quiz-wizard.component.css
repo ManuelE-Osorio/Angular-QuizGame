@@ -1,3 +1,19 @@
 .margin{
     margin: 20px;
 }
+
+.spacer {
+    flex: 1 1 auto;
+  }
+
+.flex-container{
+    margin: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: start;
+}
+
+.field-button{
+    margin: 5px;
+}

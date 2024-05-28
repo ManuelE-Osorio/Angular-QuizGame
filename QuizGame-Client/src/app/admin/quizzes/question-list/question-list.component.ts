@@ -1,4 +1,4 @@
-import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
+import { Component, Input, OnInit, QueryList, ViewChildren } from '@angular/core';
 import { Question } from '../../../models/question';
 import { QuestionsService } from '../../../services/questions.service';
 import { PageData } from '../../../models/pagedata';
@@ -22,7 +22,7 @@ export class QuestionListComponent implements OnInit {
   questions: PageData<Question> | null = null;
   isLoading : boolean = true;
   selectedQuestions: Question[] = [];
-  totalSelectedQuestions: Question[] = [];
+  @Input() totalSelectedQuestions: Question[] = [];
 
   constructor(
     private questionService : QuestionsService,
@@ -34,7 +34,7 @@ export class QuestionListComponent implements OnInit {
         this.questions = resp;
         this.isLoading = false;
       }
-    })
+    });
   }
 
   modifySelection(event: MatSelectionListChange){

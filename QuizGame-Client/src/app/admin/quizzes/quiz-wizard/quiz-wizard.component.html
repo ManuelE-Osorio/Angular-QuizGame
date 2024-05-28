@@ -1,21 +1,29 @@
 <div class="margin">
+
+@if(quizForm != null){
     <mat-stepper [orientation]="(stepperOrientation | async)!" linear>
         <mat-step [stepControl]="quizForm" label="Fill Quiz details">
 
             <ng-template matStepContent>
+                <h2>Quiz Basic Information:</h2>
                 <form [formGroup]="quizForm">
-                    <mat-form-field appearance="fill">
-                        <mat-label>Name</mat-label>
-                        <input matInput formControlName="name" type="text">
-                    </mat-form-field>
-    
-                    <mat-form-field appearance="fill">
-                        <mat-label>Description:</mat-label>
-                        <textarea matInput formControlName="description"> </textarea>
-                    </mat-form-field>
-    
                     <div>
-                        <button mat-flat-button matStepperNext [disabled]="!quizForm.valid" color="primary">Next</button>
+                        <mat-form-field appearance="fill">
+                            <mat-label>Name</mat-label>
+                            <input matInput formControlName="name" type="text">
+                        </mat-form-field>
+                    </div>
+
+                    <div>
+                        <mat-form-field appearance="fill">
+                            <mat-label>Description:</mat-label>
+                            <textarea matInput formControlName="description"> </textarea>
+                        </mat-form-field>
+                    </div>
+
+                    <div>
+                        <button mat-flat-button color="warn" (click)="return()" class="field-button">Return</button>
+                        <button mat-flat-button matStepperNext [disabled]="!quizForm.valid" color="primary" class="field-button">Next</button>
                     </div>
                 </form>
             </ng-template>
@@ -23,19 +31,32 @@
 
         <mat-step label="Add Questions">
             <ng-template matStepContent>
-                <div>
-                    <app-question-list #questionList></app-question-list>
+                <h2>Quiz Questions:</h2>
 
-                    <mat-list>
-                        @for (question of questionList.totalSelectedQuestions; track $index) {
-                            <mat-list-item>{{question.questionText}}</mat-list-item>
-                        }
-                    </mat-list>
+                <div class="flex-container">
+
+                    <div>
+                        <mat-list>
+                            <h4>Selected Questions</h4>
+                            @if(questionList != null){
+                                @for (question of questionList.totalSelectedQuestions; track $index) {
+                                    <mat-list-item>{{question.questionText}}</mat-list-item>
+                                }
+                            }
+                        </mat-list>
+                    </div>
+                    
+                    <span class="spacer"></span>
+                    <div>
+                        <h4>Question List</h4>
+                        <app-question-list #questionList [totalSelectedQuestions]="currentList"></app-question-list>
+                    </div>
+
                 </div>
 
                 <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button matStepperNext>Next</button>
+                    <button mat-flat-button color="warn" matStepperPrevious class="field-button">Back</button>
+                    <button mat-flat-button color="primary" matStepperNext class="field-button">Next</button>
                 </div>
             </ng-template>
         </mat-step>
@@ -45,14 +66,15 @@
                 
                 <div>
                     <mat-list>
-                        <mat-list-item>Name: {{this.quizForm.value.name}}</mat-list-item>
-                        <mat-list-item>Description: {{this.quizForm.value.description}}</mat-list-item>
+                        <mat-list-item><strong>Name:</strong> {{this.quizForm.value.name}}</mat-list-item>
+                        <mat-list-item><strong>Description:</strong> {{this.quizForm.value.description}}</mat-list-item>
                     </mat-list>
 
                 </div>
                 
                 <div>
                     <mat-list>
+                        <mat-list-item><strong>Questions:</strong> </mat-list-item>
                         @for (question of questionList.totalSelectedQuestions; track $index) {
                             <mat-list-item>{{question.questionText}}</mat-list-item>
                         }
@@ -60,10 +82,22 @@
                 </div>
 
                 <div>
-                    <button mat-button matStepperPrevious>Back</button>
-                    <button mat-button (click)="submitQuiz()">Save</button>
+                    <button mat-flat-button color="warn" matStepperPrevious class="field-button">Back</button>
+                    @if(this.id == 0){
+                        <button mat-flat-button color="primary" (click)="submitQuiz()" class="field-button">Create</button>
+                    }
+                    @else {
+                        <button mat-flat-button color="primary" (click)="submitQuiz()" class="field-button">Update</button>
+                    }
+                    
                 </div>
             </ng-template>
         </mat-step>
     </mat-stepper>
+    
+}
+@else {
+    <mat-spinner mode="indeterminate"></mat-spinner>
+}
+
 </div>
