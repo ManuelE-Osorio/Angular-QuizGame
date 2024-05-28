@@ -12,18 +12,23 @@ namespace QuizGame.Controllers;
 [ApiController]
 [ApiConventionType(typeof(DefaultApiConventions))]
 [Route("api/users")]
-public class UsersController(UsersService userService, UserManager<QuizGameUser> userManager) : ControllerBase
+public class UsersController(UserManager<QuizGameUser> userManager) : ControllerBase
 {
-    private readonly UsersService _userService = userService;
     private readonly UserManager<QuizGameUser> _userManager = userManager;
 
     [HttpGet]
-    public async Task<IResult> GetAllGames(string? name, string? date, int? startIndex, int? pageSize) 
+    public async Task<IResult> GetAllGames(int? startIndex, int? pageSize) 
     {
-        var user = await _userManager.GetUserAsync(User);
-
-        await _userManager
-        var games = await _gamesService.GetAll(user!, name, date, startIndex, pageSize);
-        return TypedResults.Ok(games);
+        var users = (await _userManager.GetUsersInRoleAsync("User"))
+            .Skip(startIndex ?? 0)
+            .Take(pageSize ?? 5);
+        
+        return TypedResults.Ok( new PageData<QuizGameUserDto>
+        (
+            users.Select(p => new QuizGameUserDto(p)),
+            users.Count(),
+            startIndex,
+            pageSize
+        ));
     }
 }

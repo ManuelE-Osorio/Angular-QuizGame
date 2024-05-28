@@ -48,7 +48,7 @@ public class GamesService(
         return new GameDto(game);
     }
 
-    public async Task<bool> AddGame(QuizGameUser user, bool owned, GameDto gameDto)
+    public async Task<GameDto?> AddGame(QuizGameUser user, bool owned, GameDto gameDto)
     {
         var game = new Game(gameDto);
         if(owned)
@@ -64,9 +64,9 @@ public class GamesService(
         var operationSuccesfull = await _gamesRepository.Create(game);
 
         if(operationSuccesfull)
-            return true;
+            return new GameDto(game);
         
-        return false;
+        return null;
     }
 
     public async Task<bool> AddUsersToGame(QuizGameUser user, int id, List<string> assignedUsers )

@@ -5,54 +5,49 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { PageData } from '../../../models/pagedata';
 import { User } from '../../../models/user';
 import { UserService } from '../../../services/user.service';
+import { QuizService } from '../../../services/quiz.service';
+import { Quiz } from '../../../models/quiz';
 
 @Component({
-  selector: 'app-user-list',
+  selector: 'app-quiz-list',
   standalone: true,
   imports: [
     MatPaginatorModule,
     MatProgressBarModule,
     MatListModule
   ],
-  templateUrl: './user-list.component.html',
-  styleUrl: './user-list.component.css'
+  templateUrl: './quiz-list.component.html',
+  styleUrl: './quiz-list.component.css'
 })
-export class UserListComponent {
+export class QuizListComponent {
 
-  users: PageData<User> | null = null;
+  quizzes: PageData<Quiz> | null = null;
   isLoading : boolean = true;
-  selectedUsers: User[] = [];
-  @Input() totalSelectedUsers: User[] = [];
+  
+  @Input() selectedQuiz: Quiz | null = null;
 
   constructor(
-    private userService : UserService,
+    private quizService : QuizService,
   ) {}
 
   ngOnInit(): void {
-    this.userService.getAllUsers().subscribe( (resp) => {
+    this.quizService.getAllQuizzes().subscribe( (resp) => {
       if(resp != null) {
-        this.users = resp;
+        this.quizzes = resp;
         this.isLoading = false;
       }
     });
   }
 
   modifySelection(event: MatSelectionListChange){
-    this.selectedUsers = event.source.selectedOptions.selected.map((o: MatListOption) => o.value);
-    this.users?.data.forEach( (user) => {
-      if(this.totalSelectedUsers.findIndex( value => value.id === user.id) != -1)
-      {
-        this.totalSelectedUsers.splice(this.totalSelectedUsers.findIndex( value => value.id === user.id), 1)
-      }
-    });
-
-    this.totalSelectedUsers.splice(this.totalSelectedUsers.length+1, 0, ...this.selectedUsers)
+    this.selectedQuiz = event.source.selectedOptions.selected.map((o: MatListOption) => o.value)[0];
+    console.log(this.selectedQuiz)
   }
 
   getUsers(startIndex: number){
-    this.userService.getAllUsers(startIndex).subscribe( (resp) => {
+    this.quizService.getAllQuizzes(undefined, startIndex).subscribe( (resp) => {
       if(resp != null) {
-        this.users = resp;
+        this.quizzes = resp;
         this.isLoading = false;
       }
     });
@@ -63,8 +58,8 @@ export class UserListComponent {
     this.getUsers(event.pageIndex*event.pageSize);
   }
 
-  isSelected(id: string): boolean{
-    if(this.totalSelectedUsers.find( p => p.id == id) != undefined){
+  isSelected(id: number): boolean{
+    if(this.selectedQuiz != null && this.selectedQuiz.id == id){
       return true;
     }
     else

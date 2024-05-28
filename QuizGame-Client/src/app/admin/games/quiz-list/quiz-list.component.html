@@ -1,0 +1,20 @@
+@if(quizzes != null){
+    <mat-selection-list [multiple]="false" (selectionChange)="modifySelection($event)">
+        @for (quiz of quizzes.data; track quiz) {
+          <mat-list-option [value]="quiz" [selected]="isSelected(quiz.id)">{{quiz.name}}</mat-list-option>
+        }
+    </mat-selection-list>
+}
+
+@if(isLoading){
+    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}
+
+@if(quizzes != null){
+    <mat-paginator [pageSizeOptions]="[5]"
+        [hidePageSize]="true"
+        showFirstLastButtons
+        (page)="onChangePage($event)"
+        [length]="quizzes.totalRecords">
+    </mat-paginator>    
+}

@@ -44,13 +44,15 @@ public class GamesController(GamesService gamesService, UserManager<QuizGameUser
     }
 
     [HttpPost]
-    public async Task<IResult> InsertGame([FromBody] GameDto game, bool owned = true)
+    public async Task<IResult> InsertGame([FromBody] GameDto gameDto, bool owned = true)
     {
         if(!ModelState.IsValid)
             return TypedResults.BadRequest();
 
         var user = await _userManager.GetUserAsync(User);
-        if(await _gamesService.AddGame(user!, owned, game))
+        var game = await _gamesService.AddGame( user!, owned, gameDto);
+        
+        if(game != null)
             return TypedResults.Created($"/{game.Id}", game);
         
         return TypedResults.StatusCode(500);

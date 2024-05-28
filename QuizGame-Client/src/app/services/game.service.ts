@@ -110,7 +110,7 @@ export class GameService {
   }
 
   insertUsers(id: number, assignedUsers: string[]) : Observable<boolean | string> {
-    return this.http.put<boolean | string>(`${this.baseUrl}/${id}/questions`, assignedUsers, {
+    return this.http.put<boolean | string>(`${this.baseUrl}/${id}/users`, assignedUsers, {
       responseType: 'json',
       withCredentials: true,
       observe: 'response'

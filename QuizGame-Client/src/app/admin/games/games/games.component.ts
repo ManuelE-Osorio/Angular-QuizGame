@@ -61,7 +61,6 @@ export class GamesComponent {
         this.data.data = resp.data
         this.games = resp;
         this.isLoading = false;
-        console.log(resp)
       }
     });
   }

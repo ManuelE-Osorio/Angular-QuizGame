@@ -17,7 +17,7 @@
                         <div>
                             <mat-form-field appearance="fill">
                                 <mat-label>Passing Score:</mat-label>
-                                <input matInput formControlName="score" type="number">
+                                <input matInput formControlName="passingScore" type="number">
                             </mat-form-field>
                         </div>
 
@@ -35,8 +35,28 @@
                     </form>
                 </ng-template>
             </mat-step>
+
+            <mat-step label="Add Quiz">
+                <ng-template matStepContent>
+                    <h2>Assigned Users:</h2>
     
-            <mat-step label="Add Questions">
+                    <div class="flex-container">
+    
+                        <div>
+                            <h4>Quiz List</h4>
+                            <app-quiz-list #quizList [selectedQuiz]="currentQuiz"></app-quiz-list>
+                        </div>
+    
+                    </div>
+    
+                    <div>
+                        <button mat-flat-button color="warn" matStepperPrevious class="field-button">Back</button>
+                        <button mat-flat-button color="primary" matStepperNext class="field-button">Next</button>
+                    </div>
+                </ng-template>
+            </mat-step>
+    
+            <mat-step label="Assign Users">
                 <ng-template matStepContent>
                     <h2>Assigned Users:</h2>
     
@@ -55,7 +75,7 @@
                         
                         <span class="spacer"></span>
                         <div>
-                            <h4>Question List</h4>
+                            <h4>User List</h4>
                             <app-user-list #userList [totalSelectedUsers]="currentList"></app-user-list>
                         </div>
     
@@ -76,13 +96,14 @@
                             <mat-list-item><strong>Name:</strong> {{gameForm.value.name}}</mat-list-item>
                             <mat-list-item><strong>Passing Score:</strong> {{gameForm.value.passingScore}}</mat-list-item>
                             <mat-list-item><strong>Passing Score:</strong> {{gameForm.value.dueDate | date}}</mat-list-item>
+                            <mat-list-item><strong>Quiz:</strong> {{quizList.selectedQuiz?.name}}</mat-list-item>
                         </mat-list>
     
                     </div>
                     
                     <div>
                         <mat-list>
-                            <mat-list-item><strong>Questions:</strong> </mat-list-item>
+                            <mat-list-item><strong>Assigned Users:</strong> </mat-list-item>
                             @for (user of userList.totalSelectedUsers; track $index) {
                                 <mat-list-item>{{user.alias}}</mat-list-item>
                             }
@@ -108,4 +129,4 @@
         <mat-spinner mode="indeterminate"></mat-spinner>
     }
     
-    </div>
+</div>

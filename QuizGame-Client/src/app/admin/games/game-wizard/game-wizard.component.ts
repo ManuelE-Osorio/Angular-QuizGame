@@ -16,8 +16,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatStepperModule } from '@angular/material/stepper';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Observable, map } from 'rxjs';
-import { QuestionListComponent } from '../../quizzes/question-list/question-list.component';
 import { User } from '../../../models/user';
+import { QuizListComponent } from '../quiz-list/quiz-list.component';
+import { Quiz } from '../../../models/quiz';
+import { QuizService } from '../../../services/quiz.service';
 
 @Component({
   selector: 'app-game-wizard',
@@ -33,16 +35,19 @@ import { User } from '../../../models/user';
     AsyncPipe,
     UserListComponent,
     MatProgressSpinnerModule,
-    DatePipe
+    DatePipe,
+    QuizListComponent
   ],
   templateUrl: './game-wizard.component.html',
   styleUrl: './game-wizard.component.css'
 })
 export class GameWizardComponent {
   gameForm : FormGroup<GameForm> | null = null;
+  currentQuiz: Quiz | null = null;
   currentList: User[] = [];
 
   @ViewChild(UserListComponent) public userList!: UserListComponent;
+  @ViewChild(QuizListComponent) public quizList!: QuizListComponent;
   
   stepperOrientation: Observable<StepperOrientation>;
   id: number;
@@ -50,6 +55,7 @@ export class GameWizardComponent {
   constructor(
     private route: ActivatedRoute,
     private gameService: GameService,
+    private quizService: QuizService,
     private snackBar: MatSnackBar,
     private router: Router,
     private location: Location,
@@ -70,6 +76,11 @@ export class GameWizardComponent {
         if(resp != null){
           this.gameForm = this.createForm(resp);
           this.currentList = resp.assignedUsers;
+          this.quizService.getQuiz(resp.quizId).subscribe( (resp) => {
+            if(resp != null){
+              this.currentQuiz = resp
+            }
+          })
         }
       });
     }
@@ -112,7 +123,7 @@ export class GameWizardComponent {
   }
 
   insertUsers(id: number) {
-    const userIdList = this.userList.totalSelectedQuestions.map( (user) => user.id)
+    const userIdList = this.userList.totalSelectedUsers.map( (user) => user.id)
     this.gameService.insertUsers(id, userIdList).subscribe( (resp) => {
       if(typeof resp == 'boolean') {
         this.snackBar.open('Users updated succesfully', 'close', {duration: 2000})
@@ -130,6 +141,8 @@ export class GameWizardComponent {
     if(this.gameForm?.valid){
       game = Object.assign(this.gameForm.value);
       game.dueDate = new Date(game.dueDate);
+      game.quizId = this.quizList.selectedQuiz?.id ?? 0;
+      game.quizName = this.quizList.selectedQuiz?.name ?? '';
       if(this.id == 0) {
         this.createGame(game);
       }
