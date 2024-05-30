@@ -43,7 +43,7 @@ public class GamesService(
     {
         Expression<Func<Game,bool>> expression = p => 
             // p.AssignedUsers != null &&
-            p.AssignedUsers.Any(q => q == user) &&
+            p.AssignedUsers!.Any(q => q == user) &&
             p.DueDate >= DateTime.Now &&
             (p.Scores == null || !p.Scores.Select(p => p.User).Contains(user));
             

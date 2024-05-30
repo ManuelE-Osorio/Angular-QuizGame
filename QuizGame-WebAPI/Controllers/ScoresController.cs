@@ -40,7 +40,7 @@ public class ScoresController(GamesScoreService gamesScoreService, UserManager<Q
     }
 
     [HttpPost]
-    public async Task<IResult> InsertScore(int gameId, [FromBody] List<int> answers)
+    public async Task<IResult> InsertScore(int gameId, [FromBody] List<CorrectAnswer> answers)
     {
         if(!ModelState.IsValid)
             return TypedResults.BadRequest();

@@ -65,7 +65,7 @@ public class GamesScoreService(
         var quiz = await _quizzesRepository.ReadById(game.Quiz.Id);
 
         Expression<Func<Question,bool>> expression = p => 
-            p.AssignedQuizzes.Select(p => p.Id).Contains(game.Quiz.Id);
+            p.AssignedQuizzes!.Select(p => p.Id).Contains(game.Quiz.Id);
 
         var questions = _questionsRepository.ReadAll(expression, 0, 0) 
             ?? throw new Exception ("Quiz doesn't have Questions assigned");
@@ -109,8 +109,8 @@ public class GamesScoreService(
 
         foreach(var question in questions)
         {
-            currentAnswer = answers.Find( p => p.Id == question.CorrectAnswer!.Id);
-            if( currentAnswer != null && currentAnswer.Equals(question.CorrectAnswer))
+            currentAnswer = answers.Find( p => p.Id == question.Id);
+            if( question.CorrectAnswer!.Equals(currentAnswer))
             {
                 correctAnswers += question.RelativeScore;
             }
