@@ -40,6 +40,9 @@ public class QuizGame
         builder.Services.AddScoped<QuizzesService>();
         builder.Services.AddScoped<IQuizGameRepository<Game>, GamesRepository>();
         builder.Services.AddScoped<GamesService>();
+        builder.Services.AddScoped<IQuizGameRepository<GameScore>, GameScoreRepository>();
+        builder.Services.AddScoped<GamesScoreService>();
+
 
         builder.Services.AddCors(options =>
         {

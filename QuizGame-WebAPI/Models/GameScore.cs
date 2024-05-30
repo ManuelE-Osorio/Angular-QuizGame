@@ -6,8 +6,8 @@ public class GameScore
     public DateTime ResultDate {get; set;}
     public double Score {get; set;}
     
-    public QuizGameUser User {get; set;}
-    public Game Game {get; set;}
+    public QuizGameUser? User {get; set;}
+    public Game? Game {get; set;}
 
     private GameScore()
     {
@@ -19,5 +19,12 @@ public class GameScore
     {
         User = user;
         Game = game;
+    }
+
+    public GameScore(GameScoreDto gameScoreDto)
+    {
+        Id = gameScoreDto.Id;
+        ResultDate = gameScoreDto.ResultDate;
+        Score = gameScoreDto.Score;
     }
 }

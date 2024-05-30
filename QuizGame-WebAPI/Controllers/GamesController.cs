@@ -43,6 +43,15 @@ public class GamesController(GamesService gamesService, UserManager<QuizGameUser
         return TypedResults.Ok(game);
     }
 
+    [HttpGet]
+    [Route("pending")]
+    public async Task<IResult> GetPendingGames(int? startIndex, int? pageSize)
+    {
+        var user = await _userManager.GetUserAsync(User);
+        var games = await _gamesService.GetPendingGames(user!, startIndex, pageSize);
+        return TypedResults.Ok(games);
+    }
+
     [HttpPost]
     public async Task<IResult> InsertGame([FromBody] GameDto gameDto, bool owned = true)
     {
@@ -51,7 +60,7 @@ public class GamesController(GamesService gamesService, UserManager<QuizGameUser
 
         var user = await _userManager.GetUserAsync(User);
         var game = await _gamesService.AddGame( user!, owned, gameDto);
-        
+
         if(game != null)
             return TypedResults.Created($"/{game.Id}", game);
         

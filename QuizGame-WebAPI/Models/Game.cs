@@ -19,6 +19,7 @@ public class Game
     [Required]
     public Quiz? Quiz {get; set;}
     public ICollection<QuizGameUser>? AssignedUsers {get; set;}
+    public ICollection<GameScore>? Scores {get; set;}
     public QuizGameUser? Owner {get; set;}
 
     private Game()

@@ -39,6 +39,29 @@ public class GamesService(
         );
     }
 
+    public async Task<PageData<GameDto>> GetPendingGames(QuizGameUser user, int? startIndex, int? pageSize)
+    {
+        Expression<Func<Game,bool>> expression = p => 
+            // p.AssignedUsers != null &&
+            p.AssignedUsers.Any(q => q == user) &&
+            p.DueDate >= DateTime.Now &&
+            (p.Scores == null || !p.Scores.Select(p => p.User).Contains(user));
+            
+        var games = _gamesRepository
+            .ReadAll(expression, startIndex, pageSize)
+            .OrderBy( p => p.DueDate);
+            
+        var totalGames = await _gamesRepository.Count(expression);
+
+        return new PageData<GameDto>
+        (
+            games.Select(p => new GameDto(p)),
+            totalGames,
+            startIndex,
+            pageSize
+        );
+    }
+
     public async Task<GameDto> GetById(QuizGameUser user, int id)
     {
         var game = await _gamesRepository.ReadById(id) ?? throw new Exception("Game not found");
@@ -57,8 +80,7 @@ public class GamesService(
         var quiz = await _quizzesRepository.ReadById(gameDto.QuizId) ?? 
             throw new Exception ("Quiz Id does not exists");
 
-        if (quiz.Owner != null && quiz.Owner.Id != user.Id)
-            throw new Exception("Quiz is not owned by the user making the request");
+
         
         game.Quiz = quiz;
         var operationSuccesfull = await _gamesRepository.Create(game);

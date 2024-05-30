@@ -48,9 +48,7 @@ public class QuestionsRepository(QuizGameContext context): IQuizGameRepository<Q
             .Include( p => p.CorrectAnswer)
             .Include( p => p.IncorrectAnswers)
             .Include( p => p.AssignedQuizzes)
-            .AsEnumerable()
-            .Skip(startIndex ?? 0)
-            .Take(pageSize ?? 5);
+            .AsEnumerable();
     }
 
     public async Task<int> Count(Expression<Func<Question, bool>>? expression = null)

@@ -34,7 +34,7 @@ namespace QuizGame_WebAPI.Migrations
 
                     b.HasIndex("AssignedUsersId");
 
-                    b.ToTable("GameQuizGameUser");
+                    b.ToTable("GameQuizGameUser", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -182,7 +182,7 @@ namespace QuizGame_WebAPI.Migrations
 
                     b.HasIndex("QuestionsId");
 
-                    b.ToTable("QuestionQuiz");
+                    b.ToTable("QuestionQuiz", (string)null);
                 });
 
             modelBuilder.Entity("QuizGame.Models.CorrectAnswer", b =>
@@ -209,7 +209,7 @@ namespace QuizGame_WebAPI.Migrations
                     b.HasIndex("QuestionId")
                         .IsUnique();
 
-                    b.ToTable("Answers");
+                    b.ToTable("Answers", (string)null);
                 });
 
             modelBuilder.Entity("QuizGame.Models.Game", b =>
@@ -243,7 +243,7 @@ namespace QuizGame_WebAPI.Migrations
 
                     b.HasIndex("QuizId");
 
-                    b.ToTable("Games");
+                    b.ToTable("Games", (string)null);
                 });
 
             modelBuilder.Entity("QuizGame.Models.GameScore", b =>
@@ -273,7 +273,7 @@ namespace QuizGame_WebAPI.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Scores");
+                    b.ToTable("Scores", (string)null);
                 });
 
             modelBuilder.Entity("QuizGame.Models.IncorrectAnswer", b =>
@@ -299,7 +299,7 @@ namespace QuizGame_WebAPI.Migrations
 
                     b.HasIndex("QuestionId");
 
-                    b.ToTable("IncorrectAnswers");
+                    b.ToTable("IncorrectAnswers", (string)null);
                 });
 
             modelBuilder.Entity("QuizGame.Models.Question", b =>
@@ -339,7 +339,7 @@ namespace QuizGame_WebAPI.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Questions");
+                    b.ToTable("Questions", (string)null);
                 });
 
             modelBuilder.Entity("QuizGame.Models.Quiz", b =>
@@ -365,7 +365,7 @@ namespace QuizGame_WebAPI.Migrations
 
                     b.HasIndex("OwnerId");
 
-                    b.ToTable("Quizzes");
+                    b.ToTable("Quizzes", (string)null);
                 });
 
             modelBuilder.Entity("QuizGame.Models.QuizGameUser", b =>

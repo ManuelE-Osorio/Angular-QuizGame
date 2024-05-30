@@ -23,13 +23,13 @@ public class SeedData
             "How much is 3x3?",
             new CorrectAnswer("9"),
             [new IncorrectAnswer("3"), new IncorrectAnswer("10"), new IncorrectAnswer("6")]
-        ) {Category = "Basic Math", SecondsTimeout = 5},
+        ) {Category = "Basic Math", SecondsTimeout = 5, CreatedAt = DateTime.Now}, 
         new Question
         (
             "How much is 5x5?",
             new CorrectAnswer("25"),
             [new IncorrectAnswer("5"), new IncorrectAnswer("30"), new IncorrectAnswer("15")]
-        ) {Category = "Basic Math", SecondsTimeout = 5}];
+        ) {Category = "Basic Math", SecondsTimeout = 5, CreatedAt = DateTime.Now}];
     private static readonly ICollection<Question> AdvancedMathQuestions =  [new Question 
         ( 
             "How much is 7x20?", 
@@ -47,13 +47,13 @@ public class SeedData
             "How much is 8x12?",
             new CorrectAnswer("96"),
             [new IncorrectAnswer("80"), new IncorrectAnswer("88"), new IncorrectAnswer("66")]
-        ) {Category = "Advanced Math", SecondsTimeout = 7, RelativeScore = 2},
+        ) {Category = "Advanced Math", SecondsTimeout = 7, RelativeScore = 2, CreatedAt = DateTime.Now.AddDays(-1)},
         new Question
         (
             "How much is 9x13?",
             new CorrectAnswer("117"),
             [new IncorrectAnswer("90"), new IncorrectAnswer("127"), new IncorrectAnswer("107")]
-        ) {Category = "Advanced Math", SecondsTimeout = 7, RelativeScore = 2}];  
+        ) {Category = "Advanced Math", SecondsTimeout = 7, RelativeScore = 2, CreatedAt = DateTime.Now.AddDays(-1)}];  
     private static readonly ICollection<Question> CapitalQuestions = [new Question 
         ( 
             "What is the capital of Spain?", 
@@ -71,13 +71,13 @@ public class SeedData
             "What is the capital of Norway?",
             new CorrectAnswer("Oslo"),
             [new IncorrectAnswer("Tokyo"), new IncorrectAnswer("Madrid"), new IncorrectAnswer("Amsterdam")]
-        ) {Category = "Capitals", SecondsTimeout = 5},
+        ) {Category = "Capitals", SecondsTimeout = 5, CreatedAt = DateTime.Now.AddDays(-2)},
         new Question
         (
             "What is the capital of Argentina?",
             new CorrectAnswer("Buenos Aires"),
             [new IncorrectAnswer("Santiago"), new IncorrectAnswer("Caracas"), new IncorrectAnswer("Bogotá")]
-        ) {Category = "Capitals", SecondsTimeout = 5}];
+        ) {Category = "Capitals", SecondsTimeout = 5, CreatedAt = DateTime.Now.AddDays(-2)}];
 
     private static readonly Quiz MathQuiz = new("Basic Math Quiz", [.. MathQuestions]);
     private static readonly Quiz CapitalQuiz = new("Capital cities Quiz", [.. CapitalQuestions]);
@@ -121,6 +121,7 @@ public class SeedData
         await emailStore.SetEmailAsync(admin, email, CancellationToken.None);
         await userManager.CreateAsync(admin, "Admin1234");
         await userManager.AddToRoleAsync(admin, "Admin");
+        await userManager.AddToRoleAsync(admin, "User");
 
         var user1 = new QuizGameUser() {Alias = "User1"};;        
         email = "user1@tcsa.com";

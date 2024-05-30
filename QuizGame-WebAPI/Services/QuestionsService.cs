@@ -27,7 +27,9 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
 
         var questions = _questionsRepository
             .ReadAll(expression, startIndex, pageSize)
-            .OrderBy( p => p.CreatedAt);
+            .OrderBy( p => p.CreatedAt)
+            .Skip(startIndex ?? 0)
+            .Take(pageSize ?? 5);
         
         var totalQuestions = await _questionsRepository.Count(expression);
 

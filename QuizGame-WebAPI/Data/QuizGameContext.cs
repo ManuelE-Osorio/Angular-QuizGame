@@ -70,7 +70,7 @@ public class QuizGameContext(DbContextOptions<QuizGameContext> options) : Identi
                 .IsRequired(true);
 
             p.HasOne( p => p.Game)
-                .WithMany()
+                .WithMany( p => p.Scores)
                 .IsRequired(true);
         });
     }

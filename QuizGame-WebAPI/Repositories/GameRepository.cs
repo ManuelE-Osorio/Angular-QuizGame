@@ -41,6 +41,7 @@ public class GamesRepository(QuizGameContext context): IQuizGameRepository<Game>
     {
         return _context.Games
             .Include( p => p.Quiz)
+            .Include( p => p.AssignedUsers)
             .Skip(startIndex ?? 0)
             .Take(pageSize ?? 5)
             .AsEnumerable();
@@ -50,6 +51,7 @@ public class GamesRepository(QuizGameContext context): IQuizGameRepository<Game>
     {
         return _context.Games.Where(expression)
             .Include( p => p.Quiz)
+            .Include( p => p.AssignedUsers)
             .Skip(startIndex ?? 0)
             .Take(pageSize ?? 5)
             .AsEnumerable();
