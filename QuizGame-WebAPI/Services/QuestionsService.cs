@@ -1,6 +1,7 @@
 using System.Diagnostics;
 using System.Linq.Expressions;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Identity.Client.AppConfig;
 using QuizGame.Data;
 using QuizGame.Models;
@@ -10,9 +11,12 @@ namespace QuizGame.Services;
 
 public interface IQuizGameService {}
 
-public class QuestionsService(IQuizGameRepository<Question> questionsRepository) : IQuizGameService
+public class QuestionsService(
+    IQuizGameRepository<Question> questionsRepository,
+    IQuizGameRepository<Game> gameRepository ) : IQuizGameService
 {
     private readonly IQuizGameRepository<Question> _questionsRepository = questionsRepository;
+    private readonly IQuizGameRepository<Game> _gameRepository = gameRepository;
 
     public async Task<PageData<QuestionListDto>> GetAll(QuizGameUser user, string? category, string? date, int? startIndex, int? pageSize)
     {
@@ -40,6 +44,24 @@ public class QuestionsService(IQuizGameRepository<Question> questionsRepository)
             startIndex,
             pageSize
         );
+    }
+
+    public IEnumerable<QuestionForUserDto> GetByGameId(int id, QuizGameUser user)
+    {
+        Expression<Func<Game,bool>> expression = p => 
+            p.Id == id &&
+            p.AssignedUsers!.Any(q => q == user);
+
+        var game = _gameRepository.ReadAll(expression, 0, 5).FirstOrDefault()
+            ?? throw new Exception("Game not assigned to user");
+
+        Expression<Func<Question,bool>> expressionQuestion = p => 
+            p.AssignedQuizzes!.Any( q => q == game.Quiz);
+            
+        var questions = _questionsRepository
+            .ReadAll(expressionQuestion, null, null);
+
+        return questions.Select(p => new QuestionForUserDto(p));
     }
 
     public async Task<QuestionDto> GetById(int id, QuizGameUser user)

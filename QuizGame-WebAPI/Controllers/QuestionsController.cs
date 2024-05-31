@@ -34,6 +34,22 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
         return TypedResults.Ok(questions);
     }
 
+    [HttpGet]
+    [Route("game/{id}")]
+    public async Task<IResult> GetQuestionsForUser(int id) 
+    {
+        var user = await _userManager.GetUserAsync(User);
+        try
+        {
+            var questions = _questionsService.GetByGameId(id, user!);
+            return TypedResults.Ok(questions);
+        }
+        catch(Exception ex)
+        {
+            return TypedResults.BadRequest(ex.Message);
+        }
+    }
+
     [HttpPost]
     public async Task<IResult> InsertQuestion([FromBody] QuestionDto questionDto, bool owned = true)
     {

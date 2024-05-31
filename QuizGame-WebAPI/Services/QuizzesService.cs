@@ -7,7 +7,10 @@ using QuizGame.Repositories;
 
 namespace QuizGame.Services;
 
-public class QuizzesService(IQuizGameRepository<Quiz> quizzesRepository, IQuizGameRepository<Question> questionsRepository)
+public class QuizzesService(
+    IQuizGameRepository<Quiz> quizzesRepository, 
+    IQuizGameRepository<Question> questionsRepository
+    )
 {
     private readonly IQuizGameRepository<Quiz> _quizzesRepository = quizzesRepository;
     private readonly IQuizGameRepository<Question> _questionsRepository = questionsRepository;

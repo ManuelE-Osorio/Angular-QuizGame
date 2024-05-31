@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse, HttpParams, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Question } from '../models/question';
+import { Question, QuestionForGame } from '../models/question';
 import { PageData } from '../models/pagedata';
 import { formatDate } from '@angular/common';
 import { Observable, tap, catchError, map, scheduled, asyncScheduler } from 'rxjs';
@@ -60,6 +60,16 @@ export class QuestionsService {
         }
         return null;
       }),
+    );
+  }
+
+  getQuestionsByGame(id: number) : Observable<QuestionForGame[] | null> {
+    return this.http.get<QuestionForGame[]>(`${this.baseUrl}/game/${id}`, {
+      responseType: 'json',
+      withCredentials: true,
+    }).pipe(
+      tap( {next: () => console.log(`Items fetched succesfully`)}),
+      catchError( () => scheduled([null], asyncScheduler))
     );
   }
 

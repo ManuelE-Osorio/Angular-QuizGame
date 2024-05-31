@@ -27,9 +27,9 @@ public class QuestionsRepository(QuizGameContext context): IQuizGameRepository<Q
     {
         return _context.Questions
             .Include(p => p.CorrectAnswer)
-            .AsEnumerable()
-            .Skip(startIndex ?? 0)
-            .Take(pageSize ?? 5);
+            .Include(p => p.IncorrectAnswers)
+            .Include(p => p.AssignedQuizzes)
+            .AsEnumerable();   
     }
 
     public async Task<Question?> ReadById(int id)

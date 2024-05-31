@@ -1,1 +1,53 @@
-<p>pending-games works!</p>
+<div class="margin">
+    <div class="container">
+
+        <button mat-flat-button color="primary" routerLink='creation/0'>Game Creation</button>
+
+    </div>
+
+@if(games != null) {
+
+    <mat-table [dataSource]="data" class="container-table">
+        <mat-header-row *matHeaderRowDef="columnsToDisplay" class="table-row"></mat-header-row>
+        <mat-row *matRowDef="let myRowData; columns: columnsToDisplay" class="table-row"></mat-row>
+        
+        <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef class="text-cell">Name</mat-header-cell>
+            <mat-cell *matCellDef="let game" class="text-cell">{{game.name}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+            <mat-header-cell *matHeaderCellDef class="text-cell">Description</mat-header-cell>
+            <mat-cell *matCellDef="let game" class="text-cell">{{game.description}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="dueDate">
+            <mat-header-cell *matHeaderCellDef class="text-cell">Due Date</mat-header-cell>
+            <mat-cell *matCellDef="let game" class="text-cell">{{game.dueDate | date : 'medium'}}</mat-cell>
+        </ng-container>
+
+        <ng-container matColumnDef="options">
+            <mat-header-cell *matHeaderCellDef class="button-cell">  </mat-header-cell>
+            <mat-cell *matCellDef="let game" class="button-cell">  
+                <button mat-icon-button routerLink='creation/{{game.id}}' >
+                    <mat-icon>play_circle</mat-icon>
+                </button>
+            </mat-cell>
+        </ng-container>
+
+    </mat-table>
+    
+    <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+    <mat-paginator [pageSizeOptions]="[5]"
+        [hidePageSize]="true"
+        showFirstLastButtons
+        (page)="onChangePage($event)"
+        [length]="games.totalRecords">
+    </mat-paginator>
+
+}
+@else {
+    <mat-spinner mode="indeterminate"></mat-spinner>
+}
+
+</div>

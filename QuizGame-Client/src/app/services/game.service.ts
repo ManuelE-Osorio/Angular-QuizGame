@@ -58,6 +58,30 @@ export class GameService {
     );
   }
 
+  getPendingGames(startIndex: number) : Observable<PageData<Game> | null>{
+    let options = new HttpParams();
+    options = startIndex? options.set('startIndex', startIndex) : options;
+  
+    return this.http.get<PageData<Game>>(`${this.baseUrl}/pending`, {
+      responseType: 'json',
+      withCredentials: true,
+      params: options
+    }).pipe(
+      tap( {next: () => console.log(`Items fetched succesfully`)}),
+      catchError( () => scheduled([null], asyncScheduler)),
+      map( (resp) => {
+        if( resp != null) {
+          resp.data = resp.data.map( game => {
+            game.dueDate = new Date(game.dueDate);
+            return game
+          });
+          return resp;
+        }
+        return null;  
+      })
+    );
+  }
+
   createGame(game: Game) : Observable<number | string> {
     return this.http.post<number | string>(`${this.baseUrl}`, game, {
       responseType: 'json',

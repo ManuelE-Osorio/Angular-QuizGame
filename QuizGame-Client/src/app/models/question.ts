@@ -16,6 +16,15 @@ export interface Question{
     assignedQuizzes: string[];
 }
 
+export interface QuestionForGame{
+    id: number;
+    questionText: string;
+    questionImage: string;
+    secondsTimeout: number;
+    answers: Answer[];
+}
+
+
 export interface QuestionForm{
     id?: FormControl<number|null>;
     questionText: FormControl<string|null>;

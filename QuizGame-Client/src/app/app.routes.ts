@@ -8,6 +8,7 @@ import { QuizzesComponent } from './admin/quizzes/quizzes/quizzes.component';
 import { QuizWizardComponent } from './admin/quizzes/quiz-wizard/quiz-wizard.component';
 import { GamesComponent } from './admin/games/games/games.component';
 import { GameWizardComponent } from './admin/games/game-wizard/game-wizard.component';
+import { PendingGamesComponent } from './user/pending-games/pending-games.component';
 
 export const routes: Routes = [
     {
@@ -41,6 +42,10 @@ export const routes: Routes = [
     {
         path: 'user',
         component: UserComponent
+    },
+    {
+        path: 'user/games',
+        component: PendingGamesComponent
     },
     {
         path: 'login',

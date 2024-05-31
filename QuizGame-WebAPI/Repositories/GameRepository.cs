@@ -49,9 +49,11 @@ public class GamesRepository(QuizGameContext context): IQuizGameRepository<Game>
 
     public IEnumerable<Game> ReadAll(Expression<Func<Game,bool>> expression, int? startIndex, int? pageSize)
     {
-        return _context.Games.Where(expression)
-            .Include( p => p.Quiz)
+        return _context.Games.Include( p => p.Quiz)
             .Include( p => p.AssignedUsers)
+        
+            .Where(expression)
+
             .Skip(startIndex ?? 0)
             .Take(pageSize ?? 5)
             .AsEnumerable();
