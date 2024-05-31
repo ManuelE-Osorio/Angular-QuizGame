@@ -1,0 +1,30 @@
+.id-cell{
+    flex: 5%
+}
+
+.text-cell{
+    flex: 25%
+}
+
+.button-cell{
+    flex: 20%;
+}
+
+.container{
+    padding-bottom: 20px;
+    display: flex;
+    justify-content: center;
+}
+
+.container-table{
+    justify-content: center;
+}
+
+.table-row{
+    flex-wrap: wrap;
+    display: flex;
+}
+
+.margin{
+    margin: 20px;
+}

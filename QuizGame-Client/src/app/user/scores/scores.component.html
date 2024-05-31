@@ -1,1 +1,39 @@
-<p>scores works!</p>
+<div class="margin">
+
+    @if(scores != null) {
+    
+        <mat-table [dataSource]="data" class="container-table">
+            <mat-header-row *matHeaderRowDef="columnsToDisplay" class="table-row"></mat-header-row>
+            <mat-row *matRowDef="let myRowData; columns: columnsToDisplay" class="table-row"></mat-row>
+            
+            <ng-container matColumnDef="gameName">
+                <mat-header-cell *matHeaderCellDef class="text-cell">Game</mat-header-cell>
+                <mat-cell *matCellDef="let score" class="text-cell">{{score.gameName}}</mat-cell>
+            </ng-container>
+    
+            <ng-container matColumnDef="score">
+                <mat-header-cell *matHeaderCellDef class="text-cell">Score</mat-header-cell>
+                <mat-cell *matCellDef="let score" class="text-cell">{{score.score}}</mat-cell>
+            </ng-container>
+    
+            <ng-container matColumnDef="resultDate">
+                <mat-header-cell *matHeaderCellDef class="text-cell">Result Date</mat-header-cell>
+                <mat-cell *matCellDef="let score" class="text-cell">{{score.resultDate | date : 'medium'}}</mat-cell>
+            </ng-container>
+
+        </mat-table>
+        
+        <mat-progress-bar mode="indeterminate" *ngIf="isLoading"></mat-progress-bar>
+        <mat-paginator [pageSizeOptions]="[5]"
+            [hidePageSize]="true"
+            showFirstLastButtons
+            (page)="onChangePage($event)"
+            [length]="scores.totalRecords">
+        </mat-paginator>
+    
+    }
+    @else {
+        <mat-spinner mode="indeterminate"></mat-spinner>
+    }
+    
+    </div>

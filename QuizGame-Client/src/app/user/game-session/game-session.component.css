@@ -1,0 +1,41 @@
+.container {
+    margin: 40px;
+}
+
+.full-size {
+    width: 300px;
+    min-height: 300px;
+    margin: 20px;
+}
+  
+.grid-container{
+    margin: 20px;
+}
+
+.answers-container{
+    margin: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}
+
+.box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+  
+.box div {
+width: 100px;
+height: 100px;
+}
+
+.timer
+{
+z-index:100;
+position:absolute;
+display: flex;
+align-items: center;
+justify-content: center;
+}

@@ -25,7 +25,7 @@ public class GamesScoreService(
         Expression<Func<GameScore,bool>> expression = p => 
             p.User != null && 
             p.User == user &&
-            p.Game!.Name == game &&
+            (game == null  || p.Game!.Name == game) &&
             (!isValidDate || p.ResultDate == dateResult);
 
         var scores = _scoreRepository
@@ -70,6 +70,7 @@ public class GamesScoreService(
         var questions = _questionsRepository.ReadAll(expression, 0, 0) 
             ?? throw new Exception ("Quiz doesn't have Questions assigned");
         score.Score = QuizGrader(answers, questions);
+        score.ResultDate = DateTime.Now;
 
         bool operationSuccesfull = await _scoreRepository.Create(score);
 

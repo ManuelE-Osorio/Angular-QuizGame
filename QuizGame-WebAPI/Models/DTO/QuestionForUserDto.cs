@@ -7,8 +7,7 @@ public class QuestionForUserDto
     public int Id {get; set;}
     public string? QuestionText {get; set;}
     public string? QuestionImage {get; set;}
-    public string? Category {get; set;}
-    public DateTime? CreatedAt {get; set;}
+    public int SecondsTimeout {get; set;} = 0;
     public IEnumerable<Answer>? Answers {get; set;}
 
     [JsonConstructor]
@@ -18,8 +17,7 @@ public class QuestionForUserDto
         Id = question.Id;
         QuestionText = question.QuestionText;
         QuestionImage = question.QuestionImage;
-        Category = question.Category;
-        CreatedAt = question.CreatedAt;
+        SecondsTimeout = question.SecondsTimeout;
         Answers = question.IncorrectAnswers;
         Answers = question.CorrectAnswer != null ? Answers?.Append(question.CorrectAnswer) : Answers;
 

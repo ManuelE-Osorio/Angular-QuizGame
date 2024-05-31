@@ -9,12 +9,13 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { ConfirmDeleteDialogComponent } from '../../admin/confirm-delete-dialog/confirm-delete-dialog.component';
 import { QuestionDetailsComponent } from '../../admin/questiondetails/questiondetails.component';
 import { Game } from '../../models/game';
 import { PageData } from '../../models/pagedata';
 import { GameService } from '../../services/game.service';
+import { GameSessionService } from '../../services/game-session.service';
 
 @Component({
   selector: 'app-pending-games',
@@ -44,7 +45,8 @@ export class PendingGamesComponent {
   constructor(
     private gameService : GameService,
     public dialog: MatDialog,
-    private snackBar: MatSnackBar,
+    public gameSessionService: GameSessionService,
+    private router: Router,
   ) {
     this.data = new MatTableDataSource();
   }
@@ -68,5 +70,9 @@ export class PendingGamesComponent {
     this.getGames(event.pageIndex*event.pageSize); 
   }
 
+  startGameSession(id: number) {
+    this.gameSessionService.loadQuestions(id);
+    this.router.navigate([`user/gamesession/${id}`]);
+  }
 }
 

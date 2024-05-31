@@ -1,9 +1,4 @@
 <div class="margin">
-    <div class="container">
-
-        <button mat-flat-button color="primary" routerLink='creation/0'>Game Creation</button>
-
-    </div>
 
 @if(games != null) {
 
@@ -29,7 +24,7 @@
         <ng-container matColumnDef="options">
             <mat-header-cell *matHeaderCellDef class="button-cell">  </mat-header-cell>
             <mat-cell *matCellDef="let game" class="button-cell">  
-                <button mat-icon-button routerLink='creation/{{game.id}}' >
+                <button mat-icon-button (click)='startGameSession(game.id)' >
                     <mat-icon>play_circle</mat-icon>
                 </button>
             </mat-cell>

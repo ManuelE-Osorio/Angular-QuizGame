@@ -9,6 +9,8 @@ import { QuizWizardComponent } from './admin/quizzes/quiz-wizard/quiz-wizard.com
 import { GamesComponent } from './admin/games/games/games.component';
 import { GameWizardComponent } from './admin/games/game-wizard/game-wizard.component';
 import { PendingGamesComponent } from './user/pending-games/pending-games.component';
+import { GameSessionComponent } from './user/game-session/game-session.component';
+import { ScoresComponent } from './user/scores/scores.component';
 
 export const routes: Routes = [
     {
@@ -46,6 +48,14 @@ export const routes: Routes = [
     {
         path: 'user/games',
         component: PendingGamesComponent
+    },
+    {
+        path: 'user/gamesession/:id',
+        component: GameSessionComponent
+    },
+    {
+        path: 'user/scores',
+        component: ScoresComponent
     },
     {
         path: 'login',
