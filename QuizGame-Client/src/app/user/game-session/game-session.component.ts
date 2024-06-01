@@ -41,6 +41,10 @@ export class GameSessionComponent implements OnInit, OnDestroy{
   currentQuestionTimeout?: Subscription;
   isFinished = false;
   score? : GameScore;
+  colors : string[] = []
+  colorList = ['ff6600', 'ff3399', '9966ff', '66ff66', 
+  '66ffff', '66ccff', 'ff0000', '00cc66', 
+  '0099cc', '3333ff', 'ff6699', 'ffccff']
 
   constructor(
     private gameSessionService: GameSessionService,
@@ -56,6 +60,8 @@ export class GameSessionComponent implements OnInit, OnDestroy{
     this.currentQuestion = this.gameSessionService.getCurrentQuestion().subscribe( (question) => {
       if(question != null){
         this.question = question
+        this.colors = []
+        this.colors = this.question.answers.map( () => this.getRandomColor())
       }
       else{
         this.finishGame();
@@ -118,4 +124,9 @@ export class GameSessionComponent implements OnInit, OnDestroy{
     this.currentQuestionTimeout?.unsubscribe();
     this.timerSubscription?.unsubscribe();
   }
+  
+  getRandomColor() : string{
+    return '#'+this.colorList[Math.floor(Math.random()*this.colorList.length)];
+  }
+  
 }

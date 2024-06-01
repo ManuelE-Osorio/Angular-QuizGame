@@ -1,5 +1,5 @@
 @if(score != undefined){
     <div>{{score.gameName}}</div>
-    <div>{{score.resultDate}}</div>
+    <div>{{score.resultDate | date: 'medium'}}</div>
     <div>{{score.score}}</div>
 }
