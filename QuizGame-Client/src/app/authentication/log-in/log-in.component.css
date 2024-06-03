@@ -1,0 +1,11 @@
+.margin{
+    margin: 20px;
+}
+
+.field-container{
+    margin: 10px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+}

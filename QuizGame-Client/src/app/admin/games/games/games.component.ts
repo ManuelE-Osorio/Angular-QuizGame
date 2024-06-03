@@ -39,7 +39,7 @@ export class GamesComponent {
 
 
   games : PageData<Game> | null = null;
-  columnsToDisplay = ['id', 'name', 'description', 'options'];
+  columnsToDisplay = ['id', 'name', 'options'];
   data: MatTableDataSource<Game>;
   isLoading : boolean = true;
 

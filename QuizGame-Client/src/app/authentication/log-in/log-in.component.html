@@ -1,26 +1,36 @@
-<mat-card>
-    <mat-card-content class="card-content">
-        <h2 mat-dialog-title>Log In</h2>
+<div class="margin">
 
-        @if (!isLoggedIn) {
-            <form [formGroup]="form" (submit)="submitForm()">
 
-                <mat-form-field appearance="outline" class="full-width">
+    @if (!isLoggedIn) {
+        <div class="field-container">
+            <h2 mat-dialog-title>Log In</h2>
+        </div>
+        
+        <form [formGroup]="form" (submit)="submitForm()">
+
+            <div class="field-container">
+                <mat-form-field appearance="outline">
                     <mat-label>Email:</mat-label>
                     <input type="email" matInput formControlName="email">
                 </mat-form-field>
+            </div>
 
-                <mat-form-field appearance="outline" class="full-width">
+            <div class="field-container">
+                <mat-form-field appearance="outline">
                     <mat-label>Password:</mat-label>
                     <input type="password" matInput formControlName="password">
                 </mat-form-field>
-            
-                <button mat-flat-button color="primary" [disabled]="!form.valid" type="submit">Log In</button>
-            
-            </form>    
-        }
-        @else {
-            <div> You are already Logged In</div>
-        }
-    </mat-card-content>  
-</mat-card>
+            </div>
+        
+            <div class="field-container">
+            <button mat-flat-button color="primary" [disabled]="!form.valid" type="submit">Log In</button>
+            </div>
+
+        </form>    
+    }
+    @else {
+        <div class="field-container">
+            <h3>You are already Logged In</h3>
+        </div>
+    }
+</div>

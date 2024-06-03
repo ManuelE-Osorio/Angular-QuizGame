@@ -1,5 +1,7 @@
 @if(score != undefined){
-    <div>{{score.gameName}}</div>
-    <div>{{score.resultDate | date: 'medium'}}</div>
-    <div>{{score.score}}</div>
+    <mat-list>
+        <mat-list-item><strong>Game:</strong> {{score.gameName}}</mat-list-item>
+        <mat-list-item><strong>Date:</strong> {{score.resultDate | date: 'medium'}}</mat-list-item>
+        <mat-list-item><strong>Score:</strong> {{score.score | number: '1.0-0'}}</mat-list-item>
+    </mat-list>
 }

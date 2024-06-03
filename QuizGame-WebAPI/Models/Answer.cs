@@ -26,7 +26,7 @@ public class Answer: IEquatable<Answer>
         if( !AnswerText.Equals(other.AnswerText, StringComparison.InvariantCultureIgnoreCase))
             return false;
 
-        if( AnswerImage != null && AnswerImage.Equals(other.AnswerImage))
+        if( AnswerImage != null && !AnswerImage.Equals(other.AnswerImage))
             return false;
         return true;
     }

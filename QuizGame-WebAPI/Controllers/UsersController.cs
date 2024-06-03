@@ -1,4 +1,5 @@
 using System.Net.Quic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace QuizGame.Controllers;
 [ApiController]
 [ApiConventionType(typeof(DefaultApiConventions))]
 [Route("api/users")]
+[Authorize(Roles = "Admin")]
 public class UsersController(UserManager<QuizGameUser> userManager) : ControllerBase
 {
     private readonly UserManager<QuizGameUser> _userManager = userManager;

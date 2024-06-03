@@ -6,6 +6,18 @@
     width: 300px;
     min-height: 300px;
     margin: 20px;
+    border: 5px solid;
+    border-color: black;
+    border-radius: 35px;
+}
+
+.next-size {
+    width: 150px;
+    min-height: 150px;
+    margin: 20px;
+    border: 5px solid;
+    border-color: black;
+    border-radius: 25px;
 }
   
 .grid-container{
@@ -38,4 +50,8 @@ position:absolute;
 display: flex;
 align-items: center;
 justify-content: center;
+}
+
+.field-button{
+    margin: 5px;
 }

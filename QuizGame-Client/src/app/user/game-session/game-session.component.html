@@ -1,35 +1,45 @@
 <div class="container">
     @if(isFinished != true){
-        @if(question != null){
-            
-            <div class="box">
-                <h1>{{question.questionText}}</h1>
-            </div>
-
-            <div class="box">
-                <mat-spinner mode="indeterminate"></mat-spinner>
-                <h1 class="timer">{{seconds}}</h1>
-            </div>
-
+        @if(loading == true){
             <div class="answers-container">
-            @for (answer of question.answers; track $index) {
-                <button mat-flat-button 
-                    [style.background-color]="colors[$index]"
-                    [style.color]="'#FFF'" 
-                    (click)="nextQuestion(question.id, answer)" 
-                    class="full-size">
-                        <h1>{{answer.answerText}}</h1>
-                </button>
-            }
+                <button mat-flat-button (click)="continue()" color="primary" class="next-size"><h3>Next Question</h3></button>
             </div>
+        }
+        @else {
+            @if(question != null){
+            
+                <div class="box">
+                    <h1>{{question.questionText}}</h1>
+                </div>
+    
+                <div class="box">
+                    <mat-spinner mode="indeterminate"></mat-spinner>
+                    <h1 class="timer">{{seconds}}</h1>
+                </div>
+    
+                <div class="answers-container">
+                @for (answer of question.answers; track $index) {
+                    <button mat-flat-button 
+                        [style.background-color]="colors[$index]"
+                        [style.color]="'#FFF'" 
+                        (click)="nextQuestion(question.id, answer)" 
+                        class="full-size">
+                            <h1>{{answer.answerText}}</h1>
+                    </button>
+                }
+                </div>
+            }
         }
     }
     @else {
         @if(score != undefined){
-            <app-score-display [score]="score"></app-score-display>
+            <div class="answers-container">
+                <app-score-display [score]="score"></app-score-display>
+            </div>
         }
-        
-        <button (click)="return()">Return</button>
-        <button (click)="mainMenu()">Main Menu</button>
+        <div class="answers-container">
+            <button mat-flat-button (click)="return()" color="accent" class="field-button">Return</button>
+            <button mat-flat-button (click)="mainMenu()" color="primary" class="field-button">Main Menu</button>
+        </div>
     }
 </div>

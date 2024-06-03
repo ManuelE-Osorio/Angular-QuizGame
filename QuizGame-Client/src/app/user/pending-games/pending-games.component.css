@@ -13,7 +13,7 @@
 .container{
     padding-bottom: 20px;
     display: flex;
-    justify-content: center;
+    justify-content: start;
 }
 
 .container-table{
@@ -27,4 +27,8 @@
 
 .margin{
     margin: 20px;
+}
+
+.field-button{
+    margin: 5px;
 }

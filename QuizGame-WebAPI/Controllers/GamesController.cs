@@ -1,4 +1,5 @@
 using System.Net.Quic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +13,14 @@ namespace QuizGame.Controllers;
 [ApiController]
 [ApiConventionType(typeof(DefaultApiConventions))]
 [Route("api/game")]
+[Authorize]
 public class GamesController(GamesService gamesService, UserManager<QuizGameUser> userManager) : ControllerBase
 {
     private readonly GamesService _gamesService = gamesService;
     private readonly UserManager<QuizGameUser> _userManager = userManager;
 
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<IResult> GetAllGames(string? name, string? date, int? startIndex, int? pageSize) 
     {
         var user = await _userManager.GetUserAsync(User);
@@ -27,6 +30,7 @@ public class GamesController(GamesService gamesService, UserManager<QuizGameUser
 
     [HttpGet]
     [Route("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IResult> GetGameById(int id)
     {
         var user = await _userManager.GetUserAsync(User);
@@ -45,6 +49,7 @@ public class GamesController(GamesService gamesService, UserManager<QuizGameUser
 
     [HttpGet]
     [Route("pending")]
+    [Authorize(Roles = "User")]
     public async Task<IResult> GetPendingGames(int? startIndex, int? pageSize)
     {
         var user = await _userManager.GetUserAsync(User);
@@ -53,6 +58,7 @@ public class GamesController(GamesService gamesService, UserManager<QuizGameUser
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IResult> InsertGame([FromBody] GameDto gameDto, bool owned = true)
     {
         if(!ModelState.IsValid)
@@ -68,6 +74,7 @@ public class GamesController(GamesService gamesService, UserManager<QuizGameUser
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IResult> UpdateGame(int id, [FromBody] GameDto game)
     {
         if(!ModelState.IsValid || id != game.Id)
@@ -92,6 +99,7 @@ public class GamesController(GamesService gamesService, UserManager<QuizGameUser
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IResult> DeleteQuestion(int id)
     {
         var user = await _userManager.GetUserAsync(User);
@@ -114,6 +122,7 @@ public class GamesController(GamesService gamesService, UserManager<QuizGameUser
 
     [HttpPut]
     [Route("{id}/users")]
+    [Authorize(Roles = "Admin")]
     public async Task<IResult> InserGameUsers(int id, [FromBody] List<string> assignedUsers)
     {
         if(!ModelState.IsValid)

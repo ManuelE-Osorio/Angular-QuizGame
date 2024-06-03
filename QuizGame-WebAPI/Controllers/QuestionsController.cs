@@ -1,4 +1,5 @@
 using System.Net.Quic;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,12 +13,14 @@ namespace QuizGame.Controllers;
 [ApiController]
 [ApiConventionType(typeof(DefaultApiConventions))]
 [Route("api/questions")]
+[Authorize]
 public class QuestionsController(QuestionsService questionsService, UserManager<QuizGameUser> userManager) : ControllerBase
 {
     private readonly QuestionsService _questionsService = questionsService;
     private readonly UserManager<QuizGameUser> _userManager = userManager;
 
     [HttpGet]
+    [Authorize(Roles = "Admin")]
     public async Task<IResult> GetAllQuestions(string? category, string? date, int? startIndex, int? pageSize) 
     {
         var user = await _userManager.GetUserAsync(User);
@@ -27,7 +30,8 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
 
     [HttpGet]
     [Route("{id}")]
-    public async Task<IResult> GetAllQuestions(int id) 
+    [Authorize(Roles = "Admin")]
+    public async Task<IResult> GetQuestion(int id) 
     {
         var user = await _userManager.GetUserAsync(User);
         var questions = await _questionsService.GetById(id, user!);
@@ -36,6 +40,7 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
 
     [HttpGet]
     [Route("game/{id}")]
+    [Authorize(Roles = "User")]
     public async Task<IResult> GetQuestionsForUser(int id) 
     {
         var user = await _userManager.GetUserAsync(User);
@@ -51,6 +56,7 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin")]
     public async Task<IResult> InsertQuestion([FromBody] QuestionDto questionDto, bool owned = true)
     {
         if(!ModelState.IsValid)
@@ -65,6 +71,7 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IResult> UpdateQuestion(int id, [FromBody] QuestionDto question)
     {
         if(!ModelState.IsValid || id != question.Id)
@@ -89,6 +96,7 @@ public class QuestionsController(QuestionsService questionsService, UserManager<
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IResult> DeleteQuestion(int id)
     {
         var user = await _userManager.GetUserAsync(User);

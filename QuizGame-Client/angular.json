@@ -58,7 +58,8 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "buildTarget": "QuizGame-Client:build:production"
+              "buildTarget": "QuizGame-Client:build:production",
+              "proxyConfig": "proxy.conf.js"
             },
             "development": {
               "buildTarget": "QuizGame-Client:build:development",
@@ -67,7 +68,7 @@
           },
           "defaultConfiguration": "development",
           "options": {
-            "proxyConfig": "src/proxy.conf.js"
+            "proxyConfig": "proxy.conf.js"
           }
         },
         "extract-i18n": {

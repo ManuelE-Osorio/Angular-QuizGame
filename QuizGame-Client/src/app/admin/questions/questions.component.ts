@@ -17,7 +17,6 @@ import {MatSnackBar} from '@angular/material/snack-bar';
 import {MatProgressBarModule} from '@angular/material/progress-bar'
 import { RouterLink } from '@angular/router';
 
-
 @Component({
   selector: 'app-questions',
   standalone: true,
@@ -118,5 +117,4 @@ export class QuestionsComponent implements OnInit{
       }
     });
   }
-  
 }

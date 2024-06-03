@@ -10,12 +10,6 @@
     flex: 20%;
 }
 
-.container{
-    padding-bottom: 20px;
-    display: flex;
-    justify-content: center;
-}
-
 .container-table{
     justify-content: center;
 }
@@ -27,4 +21,10 @@
 
 .margin{
     margin: 20px;
+}
+
+.container{
+    padding-bottom: 20px;
+    display: flex;
+    justify-content: start;
 }

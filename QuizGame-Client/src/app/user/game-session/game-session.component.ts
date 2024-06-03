@@ -10,7 +10,7 @@ import { ScoreService } from '../../services/score.service';
 import { ScoreDisplayComponent } from '../score-display/score-display.component';
 import { DatePipe } from '@angular/common';
 import { Location } from '@angular/common';
-import {MatGridListModule} from '@angular/material/grid-list';
+import { MatGridListModule} from '@angular/material/grid-list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
@@ -42,6 +42,7 @@ export class GameSessionComponent implements OnInit, OnDestroy{
   isFinished = false;
   score? : GameScore;
   colors : string[] = []
+  loading = true;
   colorList = ['ff6600', 'ff3399', '9966ff', '66ff66', 
   '66ffff', '66ccff', 'ff0000', '00cc66', 
   '0099cc', '3333ff', 'ff6699', 'ffccff']
@@ -74,13 +75,12 @@ export class GameSessionComponent implements OnInit, OnDestroy{
       }
     })
 
-    this.timerSubscriptionAssign();
   }
 
   timeout(){
     this.timerSubscription?.unsubscribe();
+    this.loading = true;
     this.gameSessionService.nextQuestion();
-    this.timerSubscriptionAssign();
   }
 
   timerSubscriptionAssign(){
@@ -94,15 +94,15 @@ export class GameSessionComponent implements OnInit, OnDestroy{
 
   nextQuestion(questionId: number, answer: Answer){
     this.timerSubscription?.unsubscribe();
+    this.loading = true;
     this.answers.push( {id: questionId, answerText: answer.answerText, answerImage: answer.answerImage})
     this.gameSessionService.nextQuestion();
-    this.timerSubscriptionAssign();
   }
 
   finishGame(){
-    this.currentQuestion?.unsubscribe();
     this.timerSubscription?.unsubscribe();
     this.isFinished = true;
+    this.currentQuestion?.unsubscribe();
     this.scoreService.createScore(this.gameId, this.answers).subscribe( (resp) => {
       if(typeof resp != 'string'){
         this.score = resp
@@ -111,7 +111,6 @@ export class GameSessionComponent implements OnInit, OnDestroy{
   }
 
   return(){
-    
     this.location.back();
   }
 
@@ -129,4 +128,8 @@ export class GameSessionComponent implements OnInit, OnDestroy{
     return '#'+this.colorList[Math.floor(Math.random()*this.colorList.length)];
   }
   
+  continue() {
+    this.loading = false;
+    this.timerSubscriptionAssign();
+  }
 }

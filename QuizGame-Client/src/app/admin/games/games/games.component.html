@@ -1,7 +1,8 @@
 <div class="margin">
     <div class="container">
 
-        <button mat-flat-button color="primary" routerLink='creation/0'>Game Creation</button>
+        <button mat-flat-button color="primary" routerLink='..' color="warn" class="field-button">Return</button>
+        <button mat-flat-button color="primary" routerLink='creation/0' class="field-button">Game Creation</button>
 
     </div>
 
@@ -19,11 +20,6 @@
         <ng-container matColumnDef="name">
             <mat-header-cell *matHeaderCellDef class="text-cell">Name</mat-header-cell>
             <mat-cell *matCellDef="let game" class="text-cell">{{game.name}}</mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="description">
-            <mat-header-cell *matHeaderCellDef class="text-cell">Description</mat-header-cell>
-            <mat-cell *matCellDef="let game" class="text-cell">{{game.description}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="options">

@@ -42,7 +42,10 @@ export class LogInComponent {
     this.authenticationService.logIn(account).subscribe( resp => {
       if( resp == true){
         this.isLoggedIn = true;
-        this.router.navigate(['admin']);
+        this.authenticationService.isLoggedIn().subscribe();
+        this.authenticationService.getAdmin().subscribe();
+        this.authenticationService.getUser().subscribe();
+        this.router.navigate([''])
       }
       else{
         this.isLoggedIn = false;
@@ -58,4 +61,8 @@ export class LogInComponent {
     }
   }
 
+  ngOnInit(): void {
+    this.authenticationService.isLoggedIn()
+      .subscribe( resp => this.isLoggedIn = resp)
+  }
 }

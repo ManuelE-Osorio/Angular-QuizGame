@@ -95,6 +95,9 @@ export class QuizWizardComponent implements OnInit{
         this.snackBar.open('Quiz created succesfully', 'close', {duration: 2000})
         this.insertQuestions(resp);
       }
+      else if( typeof resp == 'string'){
+        this.snackBar.open(resp, 'close', {duration: 2000})
+      }
     });
   }
 
@@ -103,6 +106,9 @@ export class QuizWizardComponent implements OnInit{
       if( typeof resp == 'boolean') {
         this.snackBar.open('Quiz updated succesfully', 'close', {duration: 2000})
         this.insertQuestions(quiz.id);
+      }
+      else if( typeof resp == 'string'){
+        this.snackBar.open(resp, 'close', {duration: 2000})
       }
     });
   }
@@ -113,6 +119,9 @@ export class QuizWizardComponent implements OnInit{
       if(typeof resp == 'boolean') {
         this.snackBar.open('Questions updated succesfully', 'close', {duration: 2000})
         this.router.navigate([`admin/quizzes`]);
+      }
+      else if( typeof resp == 'string'){
+        this.snackBar.open(resp, 'close', {duration: 2000})
       }
     });
   }

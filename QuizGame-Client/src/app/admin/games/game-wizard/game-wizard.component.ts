@@ -110,6 +110,9 @@ export class GameWizardComponent {
         this.snackBar.open('Game created succesfully', 'close', {duration: 2000})
         this.insertUsers(resp);
       }
+      else if( typeof resp == 'string'){
+        this.snackBar.open(resp, 'close', {duration: 2000})
+      }
     });
   }
 
@@ -118,6 +121,9 @@ export class GameWizardComponent {
       if( typeof resp == 'boolean') {
         this.snackBar.open('Game updated succesfully', 'close', {duration: 2000})
         this.insertUsers(game.id);
+      }
+      else if( typeof resp == 'string'){
+        this.snackBar.open(resp, 'close', {duration: 2000})
       }
     });
   }
@@ -128,6 +134,9 @@ export class GameWizardComponent {
       if(typeof resp == 'boolean') {
         this.snackBar.open('Users updated succesfully', 'close', {duration: 2000})
         this.router.navigate([`admin/games`]);
+      }
+      else if( typeof resp == 'string'){
+        this.snackBar.open(resp, 'close', {duration: 2000})
       }
     });
   }

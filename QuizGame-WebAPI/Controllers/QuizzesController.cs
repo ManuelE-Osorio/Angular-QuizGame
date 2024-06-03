@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -12,6 +13,7 @@ namespace QuizGame.Controllers;
 [ApiController]
 [ApiConventionType(typeof(DefaultApiConventions))]
 [Route("api/quiz")]
+[Authorize(Roles = "Admin")]
 public class QuizzesController(QuizzesService quizService, UserManager<QuizGameUser> userManager) : ControllerBase
 {
     private readonly QuizzesService _quizService = quizService;

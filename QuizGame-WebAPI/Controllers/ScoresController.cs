@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuizGame.Models;
@@ -14,6 +15,7 @@ public class ScoresController(GamesScoreService gamesScoreService, UserManager<Q
     private readonly UserManager<QuizGameUser> _userManager = userManager;
 
     [HttpGet]
+    [Authorize(Roles = "Admin, User")]
     public async Task<IResult> GetAllScores(string? game, string? date, int? startIndex, int? pageSize) 
     {
         var user = await _userManager.GetUserAsync(User);
@@ -23,6 +25,7 @@ public class ScoresController(GamesScoreService gamesScoreService, UserManager<Q
 
     [HttpGet]
     [Route("{id}")]
+    [Authorize(Roles = "Admin, User")]
     public async Task<IResult> GetScoreById(int id)
     {
         var user = await _userManager.GetUserAsync(User);
@@ -40,6 +43,7 @@ public class ScoresController(GamesScoreService gamesScoreService, UserManager<Q
     }
 
     [HttpPost]
+    [Authorize(Roles = "Admin, User")]
     public async Task<IResult> InsertScore(int gameId, [FromBody] List<CorrectAnswer> answers)
     {
         if(!ModelState.IsValid)
@@ -55,6 +59,7 @@ public class ScoresController(GamesScoreService gamesScoreService, UserManager<Q
     }
 
     [HttpPut("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IResult> UpdateScore(int id, [FromBody] GameScoreDto score)
     {
         if(!ModelState.IsValid || id != score.Id)
@@ -77,6 +82,7 @@ public class ScoresController(GamesScoreService gamesScoreService, UserManager<Q
     }
 
     [HttpDelete("{id}")]
+    [Authorize(Roles = "Admin")]
     public async Task<IResult> DeleteQuestion(int id)
     {
         bool operationSuccesfull;

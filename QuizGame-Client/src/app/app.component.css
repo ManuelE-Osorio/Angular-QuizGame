@@ -10,4 +10,15 @@
 .footer{
   height: 50px;
   background: gray;
+
+}
+
+.footer-text{
+  margin-left: 40px;
+  padding-top: 15px;
+  opacity: 50%;
+}
+
+.main-container{
+  min-height: 600px;
 }

@@ -1,5 +1,11 @@
 <div class="margin">
 
+    <div class="container">
+
+        <button mat-flat-button color="primary" routerLink=".." color="warn" class="field-button">Return</button>
+
+    </div>
+
 @if(games != null) {
 
     <mat-table [dataSource]="data" class="container-table">
@@ -9,11 +15,6 @@
         <ng-container matColumnDef="name">
             <mat-header-cell *matHeaderCellDef class="text-cell">Name</mat-header-cell>
             <mat-cell *matCellDef="let game" class="text-cell">{{game.name}}</mat-cell>
-        </ng-container>
-
-        <ng-container matColumnDef="description">
-            <mat-header-cell *matHeaderCellDef class="text-cell">Description</mat-header-cell>
-            <mat-cell *matCellDef="let game" class="text-cell">{{game.description}}</mat-cell>
         </ng-container>
 
         <ng-container matColumnDef="dueDate">

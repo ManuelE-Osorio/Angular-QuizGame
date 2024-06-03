@@ -62,7 +62,6 @@ export class QuizzesComponent {
         this.data.data = resp.data
         this.quizzes = resp;
         this.isLoading = false;
-        console.log(resp)
       }
     });
   }

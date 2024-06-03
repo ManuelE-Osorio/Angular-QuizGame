@@ -38,7 +38,7 @@ import { GameSessionService } from '../../services/game-session.service';
 })
 export class PendingGamesComponent {
   games : PageData<Game> | null = null;
-  columnsToDisplay = ['name', 'description', 'dueDate', 'options'];
+  columnsToDisplay = ['name', 'dueDate', 'options'];
   data: MatTableDataSource<Game>;
   isLoading : boolean = true;
 

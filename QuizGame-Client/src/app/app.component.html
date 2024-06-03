@@ -20,22 +20,26 @@
 
 
 <main>
-    <mat-sidenav-container  >
+    <mat-sidenav-container  class="main-container" >
       
       <mat-sidenav #sidenav mode="over">
-        <div>
-          <button mat-flat-button routerLink="admin" (click)="sidenav.close()" color="primary" class="full-width">
-            <mat-icon>admin_panel_settings</mat-icon>
-            Admin
-          </button>
-        </div>
+        @if(isAdmin){
+          <div>
+            <button mat-flat-button routerLink="admin" (click)="sidenav.close()" color="primary" class="full-width">
+              <mat-icon>admin_panel_settings</mat-icon>
+              Admin
+            </button>
+          </div>
+        }
         
-        <div>
-          <button mat-flat-button routerLink="user" (click)="sidenav.close()" color="primary" class="full-width">
-            <mat-icon>person</mat-icon>
-            User
-          </button>
-        </div>
+        @if(isUser){
+          <div>
+            <button mat-flat-button routerLink="user" (click)="sidenav.close()" color="primary" class="full-width">
+              <mat-icon>person</mat-icon>
+              User
+            </button>
+          </div>
+        }
       </mat-sidenav>
 
       <mat-sidenav-content >
@@ -45,4 +49,8 @@
     </mat-sidenav-container>
 </main>
 
-<footer class="footer"></footer>
+<footer class="footer">
+  <p class="footer-text">
+    Created by <a href="https://github.com/ManuelE-Osorio">ManuelE-Osorio</a> as a proyect of <a href="https://www.thecsharpacademy.com">The CSharp Academy</a>
+  </p>
+</footer>

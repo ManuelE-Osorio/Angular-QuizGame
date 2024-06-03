@@ -7,8 +7,12 @@ const PROXY_CONFIG = [
   {
     context: [
       "/api",
+      "/manage/info",
       "/login",
-      "/register"
+      "/logout",
+      "/register",
+      "/adminrole",
+      "/userrole",
    ],
     target: target,
     secure: false,

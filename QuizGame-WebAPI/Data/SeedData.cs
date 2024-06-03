@@ -79,9 +79,9 @@ public class SeedData
             [new IncorrectAnswer("Santiago"), new IncorrectAnswer("Caracas"), new IncorrectAnswer("Bogotá")]
         ) {Category = "Capitals", SecondsTimeout = 5, CreatedAt = DateTime.Now.AddDays(-2)}];
 
-    private static readonly Quiz MathQuiz = new("Basic Math Quiz", [.. MathQuestions]);
-    private static readonly Quiz CapitalQuiz = new("Capital cities Quiz", [.. CapitalQuestions]);
-    private static readonly Quiz AdvancedMathQuiz = new("Advanced Math Quiz", [..MathQuestions, ..AdvancedMathQuestions]);
+    private static readonly Quiz MathQuiz = new("Basic Math Quiz", [.. MathQuestions]) {Description = "Basic Math Quiz"};
+    private static readonly Quiz CapitalQuiz = new("Capital cities Quiz", [.. CapitalQuestions]) {Description = "Capital cities Quiz"};
+    private static readonly Quiz AdvancedMathQuiz = new("Advanced Math Quiz", [..MathQuestions, ..AdvancedMathQuestions]) {Description = "Advanced Math Quiz"};
     
     private static readonly Game MathGame = new("Basic Math Game", MathQuiz) 
     {

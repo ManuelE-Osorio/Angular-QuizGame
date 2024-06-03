@@ -119,9 +119,6 @@ public class GamesService(
         if ( game.Owner != null && game.Owner.Id != user.Id)
             throw new Exception("Game is not owned by the user making the request");
 
-        if( game.AssignedUsers != null && game.AssignedUsers.Count > 0)
-            throw new Exception("Cannot update game with assigned users.");
-
         game.Name = gameDto.Name;
         game.PassingScore = gameDto.PassingScore;
         game.DueDate = gameDto.DueDate;
@@ -138,9 +135,6 @@ public class GamesService(
 
         if ( game.Owner != null && game.Owner.Id != user.Id)
             throw new Exception("Game is not owned by the user making the request");
-
-        if( game.AssignedUsers != null && game.AssignedUsers.Count > 0)
-            throw new Exception("Cannot delete game with assigned users.");
 
         if(await _gamesRepository.Delete(game))
             return true;
