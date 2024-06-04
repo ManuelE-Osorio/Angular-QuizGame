@@ -5,7 +5,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { QuestionsService } from '../../services/questions.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { NgFor, formatDate } from '@angular/common';
 import { AnswerForm } from '../../models/answer';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -74,25 +74,37 @@ export class QuestionDetailsComponent implements OnInit{
     question.incorrectAnswers.forEach((answer) => {
       incorrectAnswersGroup.push(
         new FormGroup<AnswerForm>({
-          id: new FormControl<number|null>({value: answer.id, disabled: true}),
-          answerText: new FormControl<string|null>({value: answer.answerText, disabled: true}),
-          answerImage: new FormControl<string|null>({value: answer.answerImage, disabled: true}),
+          id: new FormControl<number|null>(answer.id),
+          answerText: new FormControl<string>(answer.answerText, {nonNullable: true, validators: [
+            Validators.required, Validators.minLength(1), Validators.maxLength(500)
+          ]}),
+          answerImage: new FormControl<string|null>(answer.answerImage),
         })
       )
     })
 
     return new FormGroup<QuestionForm>({
-      id: new FormControl<number|null>({value: question.id, disabled: true}),
-      questionText: new FormControl<string|null>({value: question.questionText, disabled: true}),
-      questionImage: new FormControl<string|null>({value: question.questionImage, disabled: true}),
-      secondsTimeout: new FormControl<number|null>({value: question.secondsTimeout, disabled: true}),
-      relativeScore: new FormControl<number|null>({value: question.relativeScore, disabled: true}),
-      category: new FormControl<string|null>({value: question.category, disabled: true}),
-      createdAt: new FormControl<string|null>({value: formatDate(question.createdAt, 'yyyy-MM-ddTHH:mm', 'en'), disabled: true}),
+      id: new FormControl<number|null>(question.id),
+      questionText: new FormControl<string>(question.questionText, {nonNullable: true, validators: [
+        Validators.required, Validators.minLength(3), Validators.maxLength(500)
+      ]}),
+      questionImage: new FormControl<string|null>(question.questionImage),
+      secondsTimeout: new FormControl<number>(question.secondsTimeout, {nonNullable: true, validators: [
+        Validators.required, Validators.min(5), Validators.max(60), Validators.pattern("^[0-9]*$")
+      ]}),
+      relativeScore: new FormControl<number>(question.relativeScore, {nonNullable: true, validators: [
+        Validators.required, Validators.min(0), Validators.max(60)
+      ]}),
+      category: new FormControl<string>(question.category, {nonNullable: true, validators: [
+        Validators.required, Validators.minLength(3), Validators.maxLength(500)
+      ]}),
+      createdAt: new FormControl<string|null>(formatDate(question.createdAt, 'yyyy-MM-ddTHH:mm', 'en')),
       correctAnswer: new FormGroup<AnswerForm>({
-        id: new FormControl<number|null>({value: question.correctAnswer.id, disabled: true}),
-        answerText: new FormControl<string|null>({value: question.correctAnswer.answerText, disabled: true}),
-        answerImage: new FormControl<string|null>({value: question.correctAnswer.answerImage, disabled: true}),
+        id: new FormControl<number|null>(question.correctAnswer.id),
+        answerText: new FormControl<string|null>(question.correctAnswer.answerText, {nonNullable: true, validators: [
+          Validators.required, Validators.minLength(1), Validators.maxLength(500)
+        ]}),
+        answerImage: new FormControl<string|null>(question.correctAnswer.answerImage),
       }),
       incorrectAnswers: new FormArray<FormGroup<AnswerForm>>(incorrectAnswersGroup),
     });
@@ -100,17 +112,29 @@ export class QuestionDetailsComponent implements OnInit{
 
   createEmptyForm() : FormGroup<QuestionForm> {
     return new FormGroup<QuestionForm>({
-      questionText: new FormControl<string|null>(''),
+      questionText: new FormControl<string|null>('', {nonNullable: true, validators: [
+        Validators.required, Validators.minLength(3), Validators.maxLength(500)
+      ]}),
       questionImage: new FormControl<string|null>(''),
-      secondsTimeout: new FormControl<number|null>(5),
-      relativeScore: new FormControl<number|null>(1),
-      category: new FormControl<string|null>(''),
+      secondsTimeout: new FormControl<number|null>(5, {nonNullable: true, validators: [
+        Validators.required, Validators.min(5), Validators.max(60), Validators.pattern("^[0-9]*$")
+      ]}),
+      relativeScore: new FormControl<number|null>(1, {nonNullable: true, validators: [
+        Validators.required, Validators.min(0), Validators.max(60)
+      ]}),
+      category: new FormControl<string|null>('', {nonNullable: true, validators: [
+        Validators.required, Validators.minLength(3), Validators.maxLength(500)
+      ]}),
       correctAnswer: new FormGroup<AnswerForm>({
-        answerText: new FormControl<string|null>(''),
+        answerText: new FormControl<string>('', {nonNullable: true, validators: [
+          Validators.required, Validators.minLength(1), Validators.maxLength(500)
+        ]}),
         answerImage: new FormControl<string|null>(''),
       }),
       incorrectAnswers: new FormArray<FormGroup<AnswerForm>>([new FormGroup<AnswerForm>({
-        answerText: new FormControl<string|null>(''),
+        answerText: new FormControl<string>('', {nonNullable: true, validators: [
+          Validators.required, Validators.minLength(1), Validators.maxLength(500)
+        ]}),
         answerImage: new FormControl<string|null>(''),
       })]),
     });
@@ -120,7 +144,9 @@ export class QuestionDetailsComponent implements OnInit{
     this.form?.controls.incorrectAnswers.push(
       new FormGroup<AnswerForm>({
         id: new FormControl<number|null>(0),
-        answerText: new FormControl<string|null>(''),
+        answerText: new FormControl<string>('', {nonNullable: true, validators: [
+          Validators.required, Validators.minLength(1), Validators.maxLength(500)
+        ]}),
         answerImage: new FormControl<string|null>(''),
       })
     );
@@ -139,7 +165,6 @@ export class QuestionDetailsComponent implements OnInit{
         question.id = resp
         this.question = question
         this.form = this.createForm(question);
-        this.form.enable();
         this.router.navigate([`admin/questions/details/${resp}`]);
       }
       else if( typeof resp == 'string'){

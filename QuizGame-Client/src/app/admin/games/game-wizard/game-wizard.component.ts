@@ -1,12 +1,12 @@
 import { DatePipe, Location } from '@angular/common';
 import { Component, ViewChild } from '@angular/core';
-import { Game, GameForm } from '../../../models/game';
+import { Game, GameForm, forbiddenDateValidator } from '../../../models/game';
 import { UserListComponent } from '../user-list/user-list.component';
 import { GameService } from '../../../services/game.service';
 import { BreakpointObserver } from '@angular/cdk/layout';
 import { StepperOrientation } from '@angular/cdk/stepper';
 import { AsyncPipe, formatDate } from '@angular/common';
-import { FormsModule, ReactiveFormsModule, FormGroup, FormControl } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormGroup, FormControl, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -89,18 +89,26 @@ export class GameWizardComponent {
   createForm(game: Game) : FormGroup<GameForm> {
     return new FormGroup<GameForm>({
       id: new FormControl<number | null> (game.id),
-      name: new FormControl<string | null> (game.name),
-      passingScore: new FormControl<number | null> (game.passingScore),
-      dueDate: new FormControl<string> (formatDate(game.dueDate, 'yyyy-MM-ddTHH:mm', 'en'), {nonNullable: true}) 
+      name: new FormControl<string | null> (game.name, {nonNullable: true, validators: [
+        Validators.required, Validators.minLength(3), Validators.maxLength(100)
+      ]}),
+      passingScore: new FormControl<number> (game.passingScore, {nonNullable: true, validators: [
+        Validators.required, Validators.min(0), Validators.max(100), Validators.pattern("^[0-9]*$")
+      ]}),
+      dueDate: new FormControl<string> (formatDate(game.dueDate, 'yyyy-MM-ddTHH:mm', 'en'), {nonNullable: true, validators: forbiddenDateValidator()}) 
     });
   }
 
   createEmptyForm() : FormGroup<GameForm> {
     return new FormGroup<GameForm>({
       id: new FormControl<number | null> (0),
-      name: new FormControl<string | null> (''),
-      passingScore: new FormControl<number | null> (60),
-      dueDate: new FormControl<string> (formatDate(Date.now(), 'yyyy-MM-ddTHH:mm', 'en'), {nonNullable: true})
+      name: new FormControl<string | null> ('', {nonNullable: true, validators: [
+        Validators.required, Validators.minLength(3), Validators.maxLength(100)
+      ]}),
+      passingScore: new FormControl<number> (60, {nonNullable: true, validators: [
+        Validators.required, Validators.min(0), Validators.max(100), Validators.pattern("^[0-9]*$")
+      ]}),
+      dueDate: new FormControl<string> (formatDate(Date.now(), 'yyyy-MM-ddTHH:mm', 'en'), {nonNullable: true, validators: forbiddenDateValidator()})
     });
   }
 
@@ -146,8 +154,8 @@ export class GameWizardComponent {
   }
 
   submitGame() {
-    let game: Game;
     if(this.gameForm?.valid){
+      let game: Game;
       game = Object.assign(this.gameForm.value);
       game.dueDate = new Date(game.dueDate);
       game.quizId = this.quizList.selectedQuiz?.id ?? 0;

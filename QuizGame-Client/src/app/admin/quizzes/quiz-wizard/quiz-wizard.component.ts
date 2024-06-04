@@ -76,7 +76,9 @@ export class QuizWizardComponent implements OnInit{
   createForm(quiz: Quiz) : FormGroup<QuizForm> {
     return new FormGroup<QuizForm>({
       id: new FormControl<number | null> (quiz.id),
-      name: new FormControl<string | null> (quiz.name),
+      name: new FormControl<string | null> (quiz.name, {nonNullable: true, validators: [
+        Validators.required, Validators.minLength(3), Validators.maxLength(100)
+      ]}),
       description: new FormControl<string | null> (quiz.description),
     });
   }
@@ -84,7 +86,9 @@ export class QuizWizardComponent implements OnInit{
   createEmptyForm() : FormGroup<QuizForm> {
     return new FormGroup<QuizForm>({
       id: new FormControl<number | null> (0),
-      name: new FormControl<string | null> (''),
+      name: new FormControl<string | null> ('', {nonNullable: true, validators: [
+        Validators.required, Validators.minLength(3), Validators.maxLength(100)
+      ]}),
       description: new FormControl<string | null> (''),
     });
   }

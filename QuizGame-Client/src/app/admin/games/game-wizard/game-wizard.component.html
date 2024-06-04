@@ -7,24 +7,39 @@
                 <ng-template matStepContent>
                     <h2>Quiz Basic Information:</h2>
                     <form [formGroup]="gameForm">
-                        <div>
-                            <mat-form-field appearance="fill">
+                        <div class="flex-container">
+                            <mat-form-field appearance="fill"  class="big-field">
                                 <mat-label>Name</mat-label>
                                 <input matInput formControlName="name" type="text">
+                                @if(gameForm.controls.name.invalid && (gameForm.controls.name.dirty || gameForm.controls.name.touched)) {
+                                    <mat-error>        
+                                      Name length must be between 3 and 100 characters.
+                                    </mat-error>
+                                  }
                             </mat-form-field>
                         </div>
     
-                        <div>
-                            <mat-form-field appearance="fill">
+                        <div class="flex-container">
+                            <mat-form-field appearance="fill"  class="big-field">
                                 <mat-label>Passing Score:</mat-label>
                                 <input matInput formControlName="passingScore" type="number">
+                                @if(gameForm.controls.passingScore.invalid && (gameForm.controls.passingScore.dirty || gameForm.controls.passingScore.touched)) {
+                                    <mat-error>        
+                                      Passing Score must be an integer betweeen 0 and 100.
+                                    </mat-error>
+                                  }
                             </mat-form-field>
                         </div>
 
-                        <div>
-                            <mat-form-field appearance="fill">
+                        <div class="flex-container">
+                            <mat-form-field appearance="fill"  class="big-field">
                                 <mat-label>Due Date:</mat-label>
                                 <input matInput formControlName="dueDate" type="datetime-local">
+                                @if(gameForm.controls.dueDate.invalid && (gameForm.controls.dueDate.dirty || gameForm.controls.dueDate.touched)) {
+                                    <mat-error>        
+                                      Due Date must be in a future date.
+                                    </mat-error>
+                                  }
                             </mat-form-field>
                         </div>
 

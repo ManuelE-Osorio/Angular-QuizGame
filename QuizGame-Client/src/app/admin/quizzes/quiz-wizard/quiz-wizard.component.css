@@ -17,3 +17,10 @@
 .field-button{
     margin: 5px;
 }
+
+.big-field{
+    min-width: 300px;
+    max-width: 700px;
+    margin: 5px;
+    flex: 50%
+}
